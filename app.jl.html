@@ -70,6 +70,29 @@
             />
             <div class="text-subtitle2 q-mt-sm">Equity Share: {{investor2_equity.toFixed(1)}}%</div>
         </div>
+        <div class="col-md-4 q-pa-sm">
+            <q-card>
+                <q-card-section>
+                    <plotly
+                        :data="[{
+                            labels: equity_labels,
+                            values: equity_values,
+                            type: 'pie',
+                            hole: 0.4,
+                            textinfo: 'label+percent',
+                            marker: {
+                                colors: ['rgb(61, 185, 100)', 'rgb(201, 90, 218)']
+                            }
+                        }]"
+                        :layout="{
+                            title: 'Equity Distribution',
+                            showlegend: false,
+                            height: 300
+                        }"
+                    />
+                </q-card-section>
+            </q-card>
+        </div>
     </div>
 
     <div class="row q-pa-md">
@@ -151,6 +174,35 @@
                             <div class="text-h6">{{year10_value.toLocaleString('en-US', {style: 'currency', currency: 'USD'})}}</div>
                         </div>
                     </div>
+                </q-card-section>
+            </q-card>
+        </div>
+    </div>
+
+    <div class="row q-pa-md">
+        <div class="col-12">
+            <h4>Property Value Chart</h4>
+        </div>
+        <div class="col-md-12 q-pa-sm">
+            <q-card>
+                <q-card-section>
+                    <plotly
+                        :data="[{
+                            x: years,
+                            y: values,
+                            mode: 'lines+markers',
+                            type: 'scatter',
+                            name: 'Property Value',
+                            line: { color: 'rgb(61, 185, 100)', width: 2 },
+                            marker: { size: 8 }
+                        }]"
+                        :layout="{
+                            title: 'Property Value Over Time',
+                            xaxis: { title: 'Years', range: [0, 10] },
+                            yaxis: { title: 'Value' },
+                            height: 400
+                        }"
+                    />
                 </q-card-section>
             </q-card>
         </div>

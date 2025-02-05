@@ -57,6 +57,14 @@ end
     @out investor2_breakeven_months = 0
     @out investor2_breakeven_days = 0
     
+    # Add data for property value chart
+    @out years = collect(0:10)  # X-axis: years 0 through 10
+    @out values = [calculate_future_value(780000, 3.0, y) for y in 0:10]  # Y-axis: property values
+
+    # Add data for equity pie chart
+    @out equity_labels = ["Investor 1", "Investor 2"]
+    @out equity_values = [50.0, 50.0]  # Default to 50-50 split
+
     @onchange num_rooms, nightly_rate, occupancy_rate, monthly_operating_costs, 
               investor1_amount, investor2_amount, land_cost, annual_appreciation begin
         # Calculate monthly revenue and profit
@@ -94,6 +102,16 @@ end
         year3_value = calculate_future_value(land_cost, annual_appreciation, 3)
         year5_value = calculate_future_value(land_cost, annual_appreciation, 5)
         year10_value = calculate_future_value(land_cost, annual_appreciation, 10)
+
+        # Update property value chart data
+        values = [calculate_future_value(land_cost, annual_appreciation, y) for y in 0:10]
+
+        # Update equity pie chart data
+        if total_investment > 0
+            equity_values = [investor1_equity, investor2_equity]
+        else
+            equity_values = [0.0, 0.0]
+        end
     end
 end
 
