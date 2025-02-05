@@ -21,6 +21,14 @@ function calculate_future_value(present_value, rate, years)
 end
 
 @app begin
+    # Add theme control
+    @in darkmode = true  # Set default to true for dark mode
+    @out theme = "dark"  # This will control the theme
+
+    @onchange darkmode begin
+        theme = darkmode ? "dark" : "light"
+    end
+
     # Project Parameters
     @in land_cost = 780000.0
     @in num_rooms = 10
@@ -64,6 +72,11 @@ end
     # Add data for equity pie chart
     @out equity_labels = ["Investor 1", "Investor 2"]
     @out equity_values = [50.0, 50.0]  # Default to 50-50 split
+
+    # Add data for financial breakdown chart
+    @out financial_labels = ["Revenue", "Operating Costs", "Net Profit"]
+    @out financial_values = [0.0, 0.0, 0.0]
+    @out financial_colors = ["rgb(61, 185, 100)", "rgb(201, 90, 218)", "rgb(54, 162, 235)"]
 
     @onchange num_rooms, nightly_rate, occupancy_rate, monthly_operating_costs, 
               investor1_amount, investor2_amount, land_cost, annual_appreciation begin
@@ -112,6 +125,13 @@ end
         else
             equity_values = [0.0, 0.0]
         end
+
+        # Update financial breakdown chart
+        financial_values = [
+            monthly_revenue,
+            monthly_operating_costs,
+            monthly_profit
+        ]
     end
 end
 
