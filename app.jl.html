@@ -61,25 +61,55 @@
                 <div class="col-12">
                     <h4>Investment Structure</h4>
                 </div>
-                <div class="col-md-4 q-pa-sm">
-                    <q-input 
-                        v-model.number="investor1_amount" 
-                        type="number" 
-                        label="Investor 1 Amount" 
-                        filled 
-                    />
-                    <div class="text-subtitle2 q-mt-sm">Equity Share: {{investor1_equity.toFixed(1)}}%</div>
+                <div class="col-md-12 q-pa-sm">
+                    <q-card>
+                        <q-card-section>
+                            <div class="row q-mb-md">
+                                <div class="col-md-4">
+                                    <q-input 
+                                        v-model="new_investor_name" 
+                                        label="Investor Name" 
+                                        filled 
+                                    />
+                                </div>
+                                <div class="col-md-4">
+                                    <q-input 
+                                        v-model.number="new_investor_amount" 
+                                        type="number" 
+                                        label="Investment Amount" 
+                                        filled 
+                                    />
+                                </div>
+                                <div class="col-md-4 q-pt-md">
+                                    <q-btn color="primary" v-on:click="add_investor = true" :loading="add_investor">Add Investor</q-btn>
+                                </div>
+                            </div>
+
+                            <q-table
+                                :rows="investors"
+                                :columns="[
+                                    {name: 'name', label: 'Name', field: 'name', align: 'left'},
+                                    {name: 'amount', label: 'Amount', field: 'amount', format: val => val.toLocaleString('en-US', {style: 'currency', currency: 'USD'}), align: 'right'},
+                                    {name: 'actions', label: 'Actions', align: 'center'}
+                                ]"
+                                row-key="name"
+                                flat
+                                bordered
+                            >
+                                <template v-slot:body="props">
+                                    <q-tr :props="props">
+                                        <q-td key="name" :props="props">{{ props.row.name }}</q-td>
+                                        <q-td key="amount" :props="props">{{ props.row.amount.toLocaleString('en-US', {style: 'currency', currency: 'USD'}) }}</q-td>
+                                        <q-td key="actions" :props="props">
+                                            <q-btn size="sm" color="negative" round icon="delete" v-on:click="remove_investor = true" :loading="remove_investor" />
+                                        </q-td>
+                                    </q-tr>
+                                </template>
+                            </q-table>
+                        </q-card-section>
+                    </q-card>
                 </div>
-                <div class="col-md-4 q-pa-sm">
-                    <q-input 
-                        v-model.number="investor2_amount" 
-                        type="number" 
-                        label="Investor 2 Amount" 
-                        filled 
-                    />
-                    <div class="text-subtitle2 q-mt-sm">Equity Share: {{investor2_equity.toFixed(1)}}%</div>
-                </div>
-                <div class="col-md-4 q-pa-sm">
+                <div class="col-md-12 q-pa-sm">
                     <q-card>
                         <q-card-section>
                             <plotly
@@ -90,12 +120,12 @@
                                     hole: 0.4,
                                     textinfo: 'label+percent',
                                     marker: {
-                                        colors: ['rgb(61, 185, 100)', 'rgb(201, 90, 218)']
+                                        colors: ['rgb(61, 185, 100)', 'rgb(201, 90, 218)', 'rgb(54, 162, 235)', 'rgb(255, 159, 64)', 'rgb(153, 102, 255)']
                                     }
                                 }]"
                                 :layout="{
                                     title: 'Equity Distribution',
-                                    showlegend: false,
+                                    showlegend: true,
                                     height: 300
                                 }"
                             />
