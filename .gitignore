@@ -1,0 +1,37 @@
+# Julia specific
+*.jl.cov
+*.jl.*.cov
+*.jl.mem
+deps/deps.jl
+Manifest.toml
+
+# Genie specific
+cache/
+log/
+sessions/
+tmp/
+
+# Environment specific
+.env
+config/secrets.jl
+
+# OS specific
+.DS_Store
+Thumbs.db
+
+# Editor specific
+.vscode/
+.idea/
+*.swp
+*~
+
+# Build and binary files
+*.so
+*.dylib
+*.dll
+*.exe
+
+# Project specific
+build/
+dist/
+docs/build/ 

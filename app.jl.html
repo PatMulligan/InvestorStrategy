@@ -1,0 +1,158 @@
+<header>
+  <h4>Investment Calculator</h4>
+</header>
+<div class="container">
+    <div class="row q-pa-md">
+        <div class="col-12">
+            <h4>Project Parameters</h4>
+        </div>
+        <div class="col-md-4 q-pa-sm">
+            <q-input 
+                v-model.number="land_cost" 
+                type="number" 
+                label="Land Cost" 
+                filled 
+            />
+        </div>
+        <div class="col-md-4 q-pa-sm">
+            <q-input 
+                v-model.number="num_rooms" 
+                type="number" 
+                label="Number of Rooms" 
+                filled 
+            />
+        </div>
+        <div class="col-md-4 q-pa-sm">
+            <q-input 
+                v-model.number="nightly_rate" 
+                type="number" 
+                label="Nightly Rate" 
+                filled 
+            />
+        </div>
+        <div class="col-md-4 q-pa-sm">
+            <q-input 
+                v-model.number="occupancy_rate" 
+                type="number" 
+                label="Occupancy Rate (0-1)" 
+                filled 
+            />
+        </div>
+        <div class="col-md-4 q-pa-sm">
+            <q-input 
+                v-model.number="monthly_operating_costs" 
+                type="number" 
+                label="Monthly Operating Costs" 
+                filled 
+            />
+        </div>
+    </div>
+
+    <div class="row q-pa-md">
+        <div class="col-12">
+            <h4>Investment Structure</h4>
+        </div>
+        <div class="col-md-4 q-pa-sm">
+            <q-input 
+                v-model.number="investor1_amount" 
+                type="number" 
+                label="Investor 1 Amount" 
+                filled 
+            />
+            <div class="text-subtitle2 q-mt-sm">Equity Share: {{investor1_equity.toFixed(1)}}%</div>
+        </div>
+        <div class="col-md-4 q-pa-sm">
+            <q-input 
+                v-model.number="investor2_amount" 
+                type="number" 
+                label="Investor 2 Amount" 
+                filled 
+            />
+            <div class="text-subtitle2 q-mt-sm">Equity Share: {{investor2_equity.toFixed(1)}}%</div>
+        </div>
+    </div>
+
+    <div class="row q-pa-md">
+        <div class="col-12">
+            <h4>Financial Overview</h4>
+        </div>
+        <div class="col-md-4 q-pa-sm">
+            <q-card>
+                <q-card-section>
+                    <div class="text-h6">Monthly Revenue</div>
+                    <div class="text-h4">{{monthly_revenue.toLocaleString('en-US', {style: 'currency', currency: 'USD'})}}</div>
+                </q-card-section>
+            </q-card>
+        </div>
+        <div class="col-md-8 q-pa-sm">
+            <q-card>
+                <q-card-section>
+                    <div class="text-h6">Monthly Profit Distribution</div>
+                    <div class="text-h4">{{monthly_profit.toLocaleString('en-US', {style: 'currency', currency: 'USD'})}}</div>
+                    <div class="row q-mt-md">
+                        <div class="col-md-6">
+                            <div class="text-subtitle1">Investor 1 ({{investor1_equity.toFixed(1)}}%)</div>
+                            <div class="text-h6">{{investor1_monthly_profit.toLocaleString('en-US', {style: 'currency', currency: 'USD'})}}</div>
+                            <div class="text-caption" v-if="investor1_breakeven_years < 999999">
+                                Break-even in: 
+                                <span v-if="investor1_breakeven_years > 0">{{investor1_breakeven_years}}y </span>
+                                <span v-if="investor1_breakeven_months > 0">{{investor1_breakeven_months}}m </span>
+                                <span v-if="investor1_breakeven_days > 0">{{investor1_breakeven_days}}d</span>
+                            </div>
+                            <div class="text-caption" v-else>Never breaks even</div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="text-subtitle1">Investor 2 ({{investor2_equity.toFixed(1)}}%)</div>
+                            <div class="text-h6">{{investor2_monthly_profit.toLocaleString('en-US', {style: 'currency', currency: 'USD'})}}</div>
+                            <div class="text-caption" v-if="investor2_breakeven_years < 999999">
+                                Break-even in: 
+                                <span v-if="investor2_breakeven_years > 0">{{investor2_breakeven_years}}y </span>
+                                <span v-if="investor2_breakeven_months > 0">{{investor2_breakeven_months}}m </span>
+                                <span v-if="investor2_breakeven_days > 0">{{investor2_breakeven_days}}d</span>
+                            </div>
+                            <div class="text-caption" v-else>Never breaks even</div>
+                        </div>
+                    </div>
+                </q-card-section>
+            </q-card>
+        </div>
+    </div>
+
+    <div class="row q-pa-md">
+        <div class="col-12">
+            <h4>Property Value Projections</h4>
+        </div>
+        <div class="col-md-3 q-pa-sm">
+            <q-input 
+                v-model.number="annual_appreciation" 
+                type="number" 
+                label="Annual Appreciation Rate (%)" 
+                filled 
+            />
+        </div>
+        <div class="col-md-9 q-pa-sm">
+            <q-card>
+                <q-card-section>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="text-subtitle1">Year 1</div>
+                            <div class="text-h6">{{year1_value.toLocaleString('en-US', {style: 'currency', currency: 'USD'})}}</div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="text-subtitle1">Year 3</div>
+                            <div class="text-h6">{{year3_value.toLocaleString('en-US', {style: 'currency', currency: 'USD'})}}</div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="text-subtitle1">Year 5</div>
+                            <div class="text-h6">{{year5_value.toLocaleString('en-US', {style: 'currency', currency: 'USD'})}}</div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="text-subtitle1">Year 10</div>
+                            <div class="text-h6">{{year10_value.toLocaleString('en-US', {style: 'currency', currency: 'USD'})}}</div>
+                        </div>
+                    </div>
+                </q-card-section>
+            </q-card>
+        </div>
+    </div>
+</div>
