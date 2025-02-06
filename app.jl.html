@@ -230,34 +230,44 @@
                     <h4>Property Value Projections</h4>
                 </div>
                 <div class="col-md-3 q-pa-sm">
-                    <q-input 
-                        v-model.number="annual_appreciation" 
-                        type="number" 
-                        label="Annual Appreciation Rate (%)" 
-                        filled 
-                    />
-                </div>
-                <div class="col-md-9 q-pa-sm">
                     <q-card>
                         <q-card-section>
-                            <div class="row">
-                                <div class="col-md-3">
-                                    <div class="text-subtitle1">Year 1</div>
-                                    <div class="text-h6">{{year1_value.toLocaleString('en-US', {style: 'currency', currency: 'USD'})}}</div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="text-subtitle1">Year 3</div>
-                                    <div class="text-h6">{{year3_value.toLocaleString('en-US', {style: 'currency', currency: 'USD'})}}</div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="text-subtitle1">Year 5</div>
-                                    <div class="text-h6">{{year5_value.toLocaleString('en-US', {style: 'currency', currency: 'USD'})}}</div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="text-subtitle1">Year 10</div>
-                                    <div class="text-h6">{{year10_value.toLocaleString('en-US', {style: 'currency', currency: 'USD'})}}</div>
-                                </div>
-                            </div>
+                            <div class="text-h6">Year 1</div>
+                            <div class="text-h4">{{year1_value.toLocaleString('en-US', {style: 'currency', currency: 'USD'})}}</div>
+                        </q-card-section>
+                    </q-card>
+                </div>
+                <div class="col-md-3 q-pa-sm">
+                    <q-card>
+                        <q-card-section>
+                            <div class="text-h6">Year 3</div>
+                            <div class="text-h4">{{year3_value.toLocaleString('en-US', {style: 'currency', currency: 'USD'})}}</div>
+                        </q-card-section>
+                    </q-card>
+                </div>
+                <div class="col-md-3 q-pa-sm">
+                    <q-card>
+                        <q-card-section>
+                            <div class="text-h6">Year 5</div>
+                            <div class="text-h4">{{year5_value.toLocaleString('en-US', {style: 'currency', currency: 'USD'})}}</div>
+                        </q-card-section>
+                    </q-card>
+                </div>
+                <div class="col-md-3 q-pa-sm">
+                    <q-card>
+                        <q-card-section>
+                            <div class="text-h6">Year 10</div>
+                            <div class="text-h4">{{year10_value.toLocaleString('en-US', {style: 'currency', currency: 'USD'})}}</div>
+                        </q-card-section>
+                    </q-card>
+                </div>
+                <div class="col-md-12 q-pa-sm">
+                    <q-card>
+                        <q-card-section>
+                            <plotly 
+                                :data="property_value_plot" 
+                                :layout="property_value_layout"
+                            />
                         </q-card-section>
                     </q-card>
                 </div>

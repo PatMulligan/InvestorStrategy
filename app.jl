@@ -94,10 +94,10 @@ end
     @in darkmode = true
     @out dark = true
     
-    @in land_cost = 780000.0
-    @in num_rooms::Int = 3
-    @in nightly_rate::Float64 = 210.0
-    @in occupancy_rate::Float64 = 0.9
+    @in land_cost = 800000.0
+    @in num_rooms::Int = 6
+    @in nightly_rate::Float64 = 90.0
+    @in occupancy_rate::Float64 = 0.6
     @in monthly_operating_costs::Float64 = 2000.0
     @in annual_appreciation = 3.0
     
@@ -126,6 +126,8 @@ end
     @out year3_value = 0.0
     @out year5_value = 0.0
     @out year10_value = 0.0
+    @out years::Vector{Int} = [0, 1, 3, 5, 10]
+    @out values::Vector{Float64} = [0.0, 0.0, 0.0, 0.0, 0.0]
     
     # Chart data
     @out investment_plot = [
@@ -163,12 +165,26 @@ end
         monthly_revenue = num_rooms * nightly_rate * occupancy_rate * 30
         monthly_profit = monthly_revenue - monthly_operating_costs
         
-        # Update investor metrics
+        # Update metrics
         investors = update_investor_metrics(investors, monthly_profit)
         investment_plot = update_plot(investors, monthly_profit)
-        
-        # Initialize financial breakdown chart
         financial_values = [monthly_revenue, monthly_operating_costs, monthly_profit]
+
+        # Update property values
+        year1_value = calculate_future_value(land_cost, annual_appreciation, 1)
+        year3_value = calculate_future_value(land_cost, annual_appreciation, 3)
+        year5_value = calculate_future_value(land_cost, annual_appreciation, 5)
+        year10_value = calculate_future_value(land_cost, annual_appreciation, 10)
+        values = [land_cost, year1_value, year3_value, year5_value, year10_value]
+    end
+
+    # Update property values when inputs change
+    @onchange land_cost, annual_appreciation begin
+        year1_value = calculate_future_value(land_cost, annual_appreciation, 1)
+        year3_value = calculate_future_value(land_cost, annual_appreciation, 3)
+        year5_value = calculate_future_value(land_cost, annual_appreciation, 5)
+        year10_value = calculate_future_value(land_cost, annual_appreciation, 10)
+        values = [land_cost, year1_value, year3_value, year5_value, year10_value]
     end
 
     # Button handlers
