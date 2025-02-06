@@ -89,7 +89,8 @@ function update_investor_metrics(investors, monthly_profit)
 end
 
 @app begin
-    # Reactive variables first
+
+    # Reactive variables
     @in darkmode = true
     @out dark = true
     
@@ -126,18 +127,6 @@ end
     @out year5_value = 0.0
     @out year10_value = 0.0
     
-    # Break-even times
-    @out investor1_breakeven_years = 0
-    @out investor1_breakeven_months = 0
-    @out investor1_breakeven_days = 0
-    @out investor2_breakeven_years = 0
-    @out investor2_breakeven_months = 0
-    @out investor2_breakeven_days = 0
-    
-    # Initialize equity variables
-    @out investor1_equity = 0.0
-    @out investor2_equity = 0.0
-
     # Chart data
     @out investment_plot = [
         PlotData(
