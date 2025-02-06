@@ -64,15 +64,15 @@
                 <div class="col-md-12 q-pa-sm">
                     <q-card>
                         <q-card-section>
-                            <div class="row q-mb-md">
-                                <div class="col-md-4">
+                            <div class="row q-mb-md items-end">
+                                <div class="col-md-4 q-px-sm">
                                     <q-input 
                                         v-model="new_investor_name" 
                                         label="Investor Name" 
                                         filled 
                                     />
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-4 q-px-sm">
                                     <q-input 
                                         v-model.number="new_investor_amount" 
                                         type="number" 
@@ -80,7 +80,7 @@
                                         filled 
                                     />
                                 </div>
-                                <div class="col-md-4 q-pt-md">
+                                <div class="col-md-4 q-px-sm">
                                     <q-btn color="primary" v-on:click="add_investor = true" :loading="add_investor">Add Investor</q-btn>
                                 </div>
                             </div>
