@@ -98,7 +98,7 @@ end
     @in num_rooms::Int = 3
     @in nightly_rate::Float64 = 210.0
     @in occupancy_rate::Float64 = 0.9
-    @in monthly_operating_costs::Float64 = 15000.0
+    @in monthly_operating_costs::Float64 = 2000.0
     @in annual_appreciation = 3.0
     
     # Investment Structure
@@ -145,12 +145,30 @@ end
         height=300
     )
 
-    # Initialize plot when page loads
+    # Update financial metrics
+    @onchange num_rooms, nightly_rate, occupancy_rate, monthly_operating_costs begin
+        monthly_revenue = num_rooms * nightly_rate * occupancy_rate * 30
+        monthly_profit = monthly_revenue - monthly_operating_costs
+        
+        # Update investor metrics
+        investors = update_investor_metrics(investors, monthly_profit)
+        investment_plot = update_plot(investors, monthly_profit)
+        
+        # Update financial breakdown chart
+        financial_values = [monthly_revenue, monthly_operating_costs, monthly_profit]
+    end
+
+    # Initialize when page loads
     @onchange isready begin
         monthly_revenue = num_rooms * nightly_rate * occupancy_rate * 30
         monthly_profit = monthly_revenue - monthly_operating_costs
+        
+        # Update investor metrics
         investors = update_investor_metrics(investors, monthly_profit)
         investment_plot = update_plot(investors, monthly_profit)
+        
+        # Initialize financial breakdown chart
+        financial_values = [monthly_revenue, monthly_operating_costs, monthly_profit]
     end
 
     # Button handlers
@@ -186,14 +204,6 @@ end
     # Reactive updates
     @onchange darkmode begin
         dark = darkmode
-    end
-
-    # Update financial metrics
-    @onchange num_rooms, nightly_rate, occupancy_rate, monthly_operating_costs begin
-        monthly_revenue = num_rooms * nightly_rate * occupancy_rate * 30
-        monthly_profit = monthly_revenue - monthly_operating_costs
-        investors = update_investor_metrics(investors, monthly_profit)
-        investment_plot = update_plot(investors, monthly_profit)
     end
 end
 
