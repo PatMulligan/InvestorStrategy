@@ -74,6 +74,20 @@ function update_plot(investors, monthly_profit)
     end
 end
 
+# Helper function to update investor metrics
+function update_investor_metrics(investors, monthly_profit)
+    if !isempty(investors)
+        total_investment = sum(i.amount for i in investors)
+        for investor in investors
+            investor.equity = (investor.amount / total_investment) * 100
+            investor.monthly_profit = monthly_profit * (investor.equity / 100)
+            (investor.breakeven_years, investor.breakeven_months, investor.breakeven_days) = 
+                calculate_breakeven(investor.amount, investor.monthly_profit)
+        end
+    end
+    return investors
+end
+
 @app begin
     # Reactive variables first
     @in darkmode = true
@@ -158,7 +172,8 @@ end
             new_investor_name = ""
             new_investor_amount = 0.0
             
-            # Update plot after adding investor
+            # Update all metrics
+            investors = update_investor_metrics(investors, monthly_profit)
             investment_plot = update_plot(investors, monthly_profit)
         end
     end
@@ -181,7 +196,8 @@ end
     @onchange num_rooms, nightly_rate, occupancy_rate, monthly_operating_costs begin
         monthly_revenue = num_rooms * nightly_rate * occupancy_rate * 30
         monthly_profit = monthly_revenue - monthly_operating_costs
-        investment_plot = update_plot(investors, monthly_profit)  # Update investor metrics when profit changes
+        investors = update_investor_metrics(investors, monthly_profit)  # Update investor metrics
+        investment_plot = update_plot(investors, monthly_profit)  # Update plot
     end
 end
 
