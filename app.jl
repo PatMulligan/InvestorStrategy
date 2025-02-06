@@ -94,10 +94,10 @@ end
     @out dark = true
     
     @in land_cost = 780000.0
-    @in num_rooms = 10
-    @in nightly_rate = 90.0
-    @in occupancy_rate = 0.7
-    @in monthly_operating_costs = 15000.0
+    @in num_rooms::Int = 3
+    @in nightly_rate::Float64 = 210.0
+    @in occupancy_rate::Float64 = 0.9
+    @in monthly_operating_costs::Float64 = 15000.0
     @in annual_appreciation = 3.0
     
     # Investment Structure
@@ -115,8 +115,8 @@ end
     @out financial_colors = ["rgb(61, 185, 100)", "rgb(201, 90, 218)", "rgb(54, 162, 235)"]
     
     # Financial Overview
-    @out monthly_revenue = 0.0
-    @out monthly_profit = 0.0
+    @out monthly_revenue::Float64 = 0.0
+    @out monthly_profit::Float64 = 0.0
     @out investor1_monthly_profit = 0.0
     @out investor2_monthly_profit = 0.0
     
@@ -158,6 +158,9 @@ end
 
     # Initialize plot when page loads
     @onchange isready begin
+        monthly_revenue = num_rooms * nightly_rate * occupancy_rate * 30
+        monthly_profit = monthly_revenue - monthly_operating_costs
+        investors = update_investor_metrics(investors, monthly_profit)
         investment_plot = update_plot(investors, monthly_profit)
     end
 
@@ -183,6 +186,10 @@ end
             new_investors = copy(investors)  # Create a copy
             deleteat!(new_investors, length(new_investors))
             investors = new_investors  # Assign the new copy
+            
+            # Update all metrics
+            investors = update_investor_metrics(investors, monthly_profit)
+            investment_plot = update_plot(investors, monthly_profit)
         end
         remove_investor = false
     end
@@ -196,8 +203,8 @@ end
     @onchange num_rooms, nightly_rate, occupancy_rate, monthly_operating_costs begin
         monthly_revenue = num_rooms * nightly_rate * occupancy_rate * 30
         monthly_profit = monthly_revenue - monthly_operating_costs
-        investors = update_investor_metrics(investors, monthly_profit)  # Update investor metrics
-        investment_plot = update_plot(investors, monthly_profit)  # Update plot
+        investors = update_investor_metrics(investors, monthly_profit)
+        investment_plot = update_plot(investors, monthly_profit)
     end
 end
 
