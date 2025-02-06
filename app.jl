@@ -67,12 +67,18 @@ end
     @out investor2_breakeven_months = 0
     @out investor2_breakeven_days = 0
     
-    # Chart data
-    @out years = collect(0:10)
-    @out values = [calculate_future_value(780000, 3.0, y) for y in 0:10]
+    # Initialize equity variables
     @out investor1_equity = 0.0
     @out investor2_equity = 0.0
-    
+
+    # Chart data
+    @out investment_plot = PlotData[]
+    @out investment_layout = PlotLayout(
+        title=PlotLayoutTitle(text="Investment Distribution"),
+        showlegend=true,  # Show legend for pie chart
+        height=300
+    )
+
     # Button handlers
     @onbutton add_investor begin
         if !isempty(new_investor_name) && new_investor_amount > 0
@@ -100,63 +106,49 @@ end
     end
 
     @onchange investors begin
-        total_investment = sum(i.amount for i in investors)
-        
-        # Always update equity values and labels based on current investors
-        equity_values = Float64[]
-        equity_labels = String[]
-        
-        if total_investment > 0
-            # Update pie chart for all current investors
-            for investor in investors
-                equity = (investor.amount / total_investment) * 100
-                push!(equity_values, equity)
-                push!(equity_labels, investor.name)
+        # Update chart
+        if !isempty(investors)
+            total_investment = sum(i.amount for i in investors)
+            investment_plot = [
+                PlotData(
+                    labels=[i.name for i in investors],
+                    values=[i.amount for i in investors],
+                    plot=StipplePlotly.Charts.PLOT_TYPE_PIE,  # Change to pie
+                    name="Investment Amount",
+                    hole=0.4,  # Creates a donut chart
+                    textinfo="label+percent",
+                    marker=PlotDataMarker(
+                        colors=["#72C8A9", "#BD5631", "#54A2EB", "#FF9F40", "#9966FF"]
+                    )
+                )
+            ]
+
+            # Update equity calculations
+            if length(investors) >= 2
+                investor1_equity = (investors[1].amount / total_investment) * 100
+                investor2_equity = (investors[2].amount / total_investment) * 100
+            else
+                investor1_equity = 0.0
+                investor2_equity = 0.0
             end
         else
-            # If no investors, show empty pie chart
-            equity_values = [0.0]
-            equity_labels = ["No Investment"]
-        end
-
-        # Update first two investors' metrics for the detailed view
-        if length(investors) >= 2
-            investor1_equity = (investors[1].amount / total_investment) * 100
-            investor2_equity = (investors[2].amount / total_investment) * 100
-            
-            investor1_monthly_profit = monthly_profit * (investor1_equity / 100)
-            investor2_monthly_profit = monthly_profit * (investor2_equity / 100)
-            
-            (investor1_breakeven_years, investor1_breakeven_months, investor1_breakeven_days) = 
-                calculate_breakeven(investors[1].amount, investor1_monthly_profit)
-            
-            (investor2_breakeven_years, investor2_breakeven_months, investor2_breakeven_days) = 
-                calculate_breakeven(investors[2].amount, investor2_monthly_profit)
-        elseif length(investors) == 1
-            # Show single investor
-            investor1_equity = 100.0
+            investment_plot = [
+                PlotData(
+                    labels=["No Investment"],
+                    values=[100],
+                    plot=StipplePlotly.Charts.PLOT_TYPE_PIE,
+                    name="Investment Amount",
+                    hole=0.4,
+                    textinfo="label+percent",
+                    marker=PlotDataMarker(color="#72C8A9")
+                )
+            ]
+            investor1_equity = 0.0
             investor2_equity = 0.0
-            
-            investor1_monthly_profit = monthly_profit
-            investor2_monthly_profit = 0.0
-            
-            (investor1_breakeven_years, investor1_breakeven_months, investor1_breakeven_days) = 
-                calculate_breakeven(investors[1].amount, investor1_monthly_profit)
-            
-            investor2_breakeven_years = investor2_breakeven_months = investor2_breakeven_days = 0
-        else
-            # No investors
-            investor1_equity = investor2_equity = 0.0
-            investor1_monthly_profit = investor2_monthly_profit = 0.0
-            investor1_breakeven_years = investor2_breakeven_years = 999999
-            investor1_breakeven_months = investor2_breakeven_months = 0
-            investor1_breakeven_days = investor2_breakeven_days = 0
         end
-    end
 
-    @onchange num_rooms, nightly_rate, occupancy_rate, monthly_operating_costs, 
-              land_cost, annual_appreciation begin
-        monthly_revenue = num_rooms * nightly_rate * 30 * occupancy_rate
+        # Update financial metrics
+        monthly_revenue = num_rooms * nightly_rate * occupancy_rate * 30
         monthly_profit = monthly_revenue - monthly_operating_costs
         
         # Calculate future values

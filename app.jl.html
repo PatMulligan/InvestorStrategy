@@ -112,22 +112,10 @@
                 <div class="col-md-12 q-pa-sm">
                     <q-card>
                         <q-card-section>
-                            <plotly
-                                :data="[{
-                                    labels: equity_labels,
-                                    values: equity_values,
-                                    type: 'pie',
-                                    hole: 0.4,
-                                    textinfo: 'label+percent',
-                                    marker: {
-                                        colors: ['rgb(61, 185, 100)', 'rgb(201, 90, 218)', 'rgb(54, 162, 235)', 'rgb(255, 159, 64)', 'rgb(153, 102, 255)']
-                                    }
-                                }]"
-                                :layout="{
-                                    title: 'Equity Distribution',
-                                    showlegend: true,
-                                    height: 300
-                                }"
+                            <plotly 
+                                :data="investment_plot" 
+                                :layout="investment_layout"
+                                style="width:100%;height:300px"
                             />
                         </q-card-section>
                     </q-card>
