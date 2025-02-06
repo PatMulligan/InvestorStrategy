@@ -139,29 +139,32 @@
                         <q-card-section>
                             <div class="text-h6">Monthly Profit Distribution</div>
                             <div class="text-h4">{{monthly_profit.toLocaleString('en-US', {style: 'currency', currency: 'USD'})}}</div>
-                            <div class="row q-mt-md">
-                                <div class="col-md-6">
-                                    <div class="text-subtitle1">Investor 1 ({{investor1_equity.toFixed(1)}}%)</div>
-                                    <div class="text-h6">{{investor1_monthly_profit.toLocaleString('en-US', {style: 'currency', currency: 'USD'})}}</div>
-                                    <div class="text-caption" v-if="investor1_breakeven_years < 999999">
-                                        Break-even in: 
-                                        <span v-if="investor1_breakeven_years > 0">{{investor1_breakeven_years}}y </span>
-                                        <span v-if="investor1_breakeven_months > 0">{{investor1_breakeven_months}}m </span>
-                                        <span v-if="investor1_breakeven_days > 0">{{investor1_breakeven_days}}d</span>
+                            <div class="row">
+                                <template v-for="investor in investors">
+                                    <div class="col-md-6 q-pa-sm">
+                                        <q-card>
+                                            <q-card-section>
+                                                <div class="text-h6">{{ investor.name }}</div>
+                                                <div class="row">
+                                                    <div class="col-6">
+                                                        <div class="text-subtitle2">Equity Share</div>
+                                                        <div class="text-h5">{{ (investor.equity || 0).toFixed(1) }}%</div>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <div class="text-subtitle2">Monthly Profit</div>
+                                                        <div class="text-h5">{{ (investor.monthly_profit || 0).toLocaleString('en-US', {style: 'currency', currency: 'USD'}) }}</div>
+                                                    </div>
+                                                </div>
+                                                <div class="text-subtitle2 q-mt-md">Break-even Time</div>
+                                                <div class="text-h5">
+                                                    {{ investor.breakeven_years }} years, 
+                                                    {{ investor.breakeven_months }} months, 
+                                                    {{ investor.breakeven_days }} days
+                                                </div>
+                                            </q-card-section>
+                                        </q-card>
                                     </div>
-                                    <div class="text-caption" v-else>Never breaks even</div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="text-subtitle1">Investor 2 ({{investor2_equity.toFixed(1)}}%)</div>
-                                    <div class="text-h6">{{investor2_monthly_profit.toLocaleString('en-US', {style: 'currency', currency: 'USD'})}}</div>
-                                    <div class="text-caption" v-if="investor2_breakeven_years < 999999">
-                                        Break-even in: 
-                                        <span v-if="investor2_breakeven_years > 0">{{investor2_breakeven_years}}y </span>
-                                        <span v-if="investor2_breakeven_months > 0">{{investor2_breakeven_months}}m </span>
-                                        <span v-if="investor2_breakeven_days > 0">{{investor2_breakeven_days}}d</span>
-                                    </div>
-                                    <div class="text-caption" v-else>Never breaks even</div>
-                                </div>
+                                </template>
                             </div>
                         </q-card-section>
                     </q-card>

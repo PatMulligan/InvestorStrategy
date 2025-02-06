@@ -20,6 +20,60 @@ function calculate_future_value(present_value, rate, years)
     return present_value * (1 + rate/100)^years
 end
 
+# Define the Investor type
+Base.@kwdef mutable struct Investor
+    name::String = ""
+    amount::Float64 = 0.0
+    equity::Float64 = 0.0
+    monthly_profit::Float64 = 0.0
+    breakeven_years::Int = 0
+    breakeven_months::Int = 0
+    breakeven_days::Int = 0
+end
+
+# Helper function to update plot and metrics
+function update_plot(investors, monthly_profit)
+    if !isempty(investors)
+        total_investment = sum(i.amount for i in investors)
+        
+        # Update metrics for each investor
+        for investor in investors
+            investor.equity = (investor.amount / total_investment) * 100
+            investor.monthly_profit = monthly_profit * (investor.equity / 100)
+            
+            # Calculate breakeven time
+            (investor.breakeven_years, investor.breakeven_months, investor.breakeven_days) = 
+                calculate_breakeven(investor.amount, investor.monthly_profit)
+        end
+
+        return [
+            PlotData(
+                labels=[i.name for i in investors],
+                values=[i.amount for i in investors],
+                plot=StipplePlotly.Charts.PLOT_TYPE_PIE,
+                name="Investment Amount",
+                hole=0.4,
+                textinfo="label+percent",
+                marker=PlotDataMarker(
+                    colors=["#72C8A9", "#BD5631", "#54A2EB", "#FF9F40", "#9966FF"]
+                )
+            )
+        ]
+    else
+        return [
+            PlotData(
+                labels=["No Investment"],
+                values=[100],
+                plot=StipplePlotly.Charts.PLOT_TYPE_PIE,
+                name="Investment Amount",
+                hole=0.4,
+                textinfo="label+percent",
+                marker=PlotDataMarker(color="#72C8A9")
+            )
+        ]
+    end
+end
+
 @app begin
     # Reactive variables first
     @in darkmode = true
@@ -33,12 +87,11 @@ end
     @in annual_appreciation = 3.0
     
     # Investment Structure
-    @out investors = [(name="Investor 1", amount=390000.0),
-                     (name="Investor 2", amount=390000.0)]
-    @in new_investor_name::String = ""
-    @in new_investor_amount::Float64 = 0.0
+    @out investors = Investor[]
     @in add_investor = false
     @in remove_investor = false
+    @in new_investor_name = ""
+    @in new_investor_amount = 0.0
     
     # Other output variables
     @out equity_labels = ["Investor 1", "Investor 2"]
@@ -72,23 +125,42 @@ end
     @out investor2_equity = 0.0
 
     # Chart data
-    @out investment_plot = PlotData[]
+    @out investment_plot = [
+        PlotData(
+            labels=["No Investment"],
+            values=[100],
+            plot=StipplePlotly.Charts.PLOT_TYPE_PIE,
+            name="Investment Amount",
+            hole=0.4,
+            textinfo="label+percent",
+            marker=PlotDataMarker(color="#72C8A9")
+        )
+    ]
     @out investment_layout = PlotLayout(
         title=PlotLayoutTitle(text="Investment Distribution"),
-        showlegend=true,  # Show legend for pie chart
+        showlegend=true,
         height=300
     )
+
+    # Initialize plot when page loads
+    @onchange isready begin
+        investment_plot = update_plot(investors, monthly_profit)
+    end
 
     # Button handlers
     @onbutton add_investor begin
         if !isempty(new_investor_name) && new_investor_amount > 0
-            new_investors = copy(investors)  # Create a copy
-            push!(new_investors, (name=new_investor_name, amount=new_investor_amount))
-            investors = new_investors  # Assign the new copy
+            push!(investors, Investor(
+                name=new_investor_name,
+                amount=new_investor_amount
+            ))
+            
             new_investor_name = ""
             new_investor_amount = 0.0
+            
+            # Update plot after adding investor
+            investment_plot = update_plot(investors, monthly_profit)
         end
-        add_investor = false
     end
 
     @onbutton remove_investor begin
@@ -105,64 +177,11 @@ end
         dark = darkmode
     end
 
-    @onchange investors begin
-        # Update chart
-        if !isempty(investors)
-            total_investment = sum(i.amount for i in investors)
-            investment_plot = [
-                PlotData(
-                    labels=[i.name for i in investors],
-                    values=[i.amount for i in investors],
-                    plot=StipplePlotly.Charts.PLOT_TYPE_PIE,  # Change to pie
-                    name="Investment Amount",
-                    hole=0.4,  # Creates a donut chart
-                    textinfo="label+percent",
-                    marker=PlotDataMarker(
-                        colors=["#72C8A9", "#BD5631", "#54A2EB", "#FF9F40", "#9966FF"]
-                    )
-                )
-            ]
-
-            # Update equity calculations
-            if length(investors) >= 2
-                investor1_equity = (investors[1].amount / total_investment) * 100
-                investor2_equity = (investors[2].amount / total_investment) * 100
-            else
-                investor1_equity = 0.0
-                investor2_equity = 0.0
-            end
-        else
-            investment_plot = [
-                PlotData(
-                    labels=["No Investment"],
-                    values=[100],
-                    plot=StipplePlotly.Charts.PLOT_TYPE_PIE,
-                    name="Investment Amount",
-                    hole=0.4,
-                    textinfo="label+percent",
-                    marker=PlotDataMarker(color="#72C8A9")
-                )
-            ]
-            investor1_equity = 0.0
-            investor2_equity = 0.0
-        end
-
-        # Update financial metrics
+    # Update financial metrics
+    @onchange num_rooms, nightly_rate, occupancy_rate, monthly_operating_costs begin
         monthly_revenue = num_rooms * nightly_rate * occupancy_rate * 30
         monthly_profit = monthly_revenue - monthly_operating_costs
-        
-        # Calculate future values
-        year1_value = calculate_future_value(land_cost, annual_appreciation, 1)
-        year3_value = calculate_future_value(land_cost, annual_appreciation, 3)
-        year5_value = calculate_future_value(land_cost, annual_appreciation, 5)
-        year10_value = calculate_future_value(land_cost, annual_appreciation, 10)
-        values = [calculate_future_value(land_cost, annual_appreciation, y) for y in 0:10]
-        
-        financial_values = [
-            monthly_revenue,
-            monthly_operating_costs,
-            monthly_profit
-        ]
+        investment_plot = update_plot(investors, monthly_profit)  # Update investor metrics when profit changes
     end
 end
 
