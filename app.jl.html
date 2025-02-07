@@ -47,13 +47,61 @@
                         filled 
                     />
                 </div>
-                <div class="col-md-4 q-pa-sm">
-                    <q-input 
-                        v-model.number="monthly_operating_costs" 
-                        type="number" 
-                        label="Monthly Operating Costs" 
-                        filled 
-                    />
+                <div class="col-md-12 q-pa-sm">
+                    <q-card>
+                        <q-card-section>
+                            <div class="text-h6">Monthly Operating Costs</div>
+                            <div class="row q-mb-md items-end">
+                                <div class="col-md-4 q-px-sm">
+                                    <q-input 
+                                        v-model="new_cost_name" 
+                                        label="Cost Name" 
+                                        filled 
+                                    />
+                                </div>
+                                <div class="col-md-4 q-px-sm">
+                                    <q-input 
+                                        v-model.number="new_cost_amount" 
+                                        type="number" 
+                                        label="Monthly Amount" 
+                                        filled 
+                                    />
+                                </div>
+                                <div class="col-md-4 q-px-sm">
+                                    <q-btn color="primary" v-on:click="add_cost = true" :loading="add_cost">Add Cost</q-btn>
+                                </div>
+                            </div>
+
+                            <q-table
+                                :rows="operating_costs"
+                                :columns="[
+                                    {name: 'name', label: 'Cost Item', field: 'name', align: 'left'},
+                                    {name: 'amount', label: 'Monthly Amount', field: 'amount', format: val => val.toLocaleString('en-US', {style: 'currency', currency: 'USD'}), align: 'right'},
+                                    {name: 'actions', label: 'Actions', align: 'center'}
+                                ]"
+                                row-key="name"
+                                flat
+                                bordered
+                            >
+                                <template v-slot:body="props">
+                                    <q-tr :props="props">
+                                        <q-td key="name" :props="props">{{ props.row.name }}</q-td>
+                                        <q-td key="amount" :props="props">{{ props.row.amount.toLocaleString('en-US', {style: 'currency', currency: 'USD'}) }}</q-td>
+                                        <q-td key="actions" :props="props">
+                                            <q-btn size="sm" color="negative" round icon="delete" v-on:click="remove_cost = true" :loading="remove_cost" />
+                                        </q-td>
+                                    </q-tr>
+                                </template>
+                                <template v-slot:bottom-row>
+                                    <q-tr>
+                                        <q-td colspan="1" class="text-right">Total:</q-td>
+                                        <q-td class="text-right">{{ monthly_operating_costs.toLocaleString('en-US', {style: 'currency', currency: 'USD'}) }}</q-td>
+                                        <q-td></q-td>
+                                    </q-tr>
+                                </template>
+                            </q-table>
+                        </q-card-section>
+                    </q-card>
                 </div>
             </div>
 

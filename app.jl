@@ -31,6 +31,12 @@ Base.@kwdef mutable struct Investor
     breakeven_days::Int = 0
 end
 
+# Define the OperatingCost type
+Base.@kwdef mutable struct OperatingCost
+    name::String = ""
+    amount::Float64 = 0.0
+end
+
 # Helper function to update plot and metrics
 function update_plot(investors, monthly_profit)
     if !isempty(investors)
@@ -99,6 +105,37 @@ function calculate_property_values(land_cost, annual_appreciation)
     return (year1, year3, year5, year10, values)
 end
 
+# Helper function to calculate monthly revenue
+function calculate_monthly_revenue(num_rooms, nightly_rate, occupancy_rate)
+    return num_rooms * nightly_rate * occupancy_rate * 30
+end
+
+# Helper function to update operating costs and related metrics
+function update_operating_costs(operating_costs)
+    return sum(cost.amount for cost in operating_costs)
+end
+
+# Financial calculation helpers
+function calculate_financials(num_rooms, nightly_rate, occupancy_rate, operating_costs)
+    monthly_revenue = calculate_monthly_revenue(num_rooms, nightly_rate, occupancy_rate)
+    monthly_operating_costs = update_operating_costs(operating_costs)
+    monthly_profit = monthly_revenue - monthly_operating_costs
+    
+    return (monthly_revenue, monthly_operating_costs, monthly_profit)
+end
+
+# Update all metrics and charts
+function update_all_metrics(monthly_revenue, monthly_operating_costs, monthly_profit, investors)
+    # Update financial values
+    financial_values = [monthly_revenue, monthly_operating_costs, monthly_profit]
+    
+    # Update investor metrics
+    investors = update_investor_metrics(investors, monthly_profit)
+    investment_plot = update_plot(investors, monthly_profit)
+    
+    return (financial_values, investors, investment_plot)
+end
+
 @app begin
 
     # Reactive variables
@@ -118,13 +155,6 @@ end
     @in remove_investor = false
     @in new_investor_name = ""
     @in new_investor_amount = 0.0
-    
-    # Other output variables
-    @out equity_labels = ["Investor 1", "Investor 2"]
-    @out equity_values = [50.0, 50.0]
-    @out financial_labels = ["Revenue", "Operating Costs", "Net Profit"]
-    @out financial_values = [0.0, 0.0, 0.0]
-    @out financial_colors = ["rgb(61, 185, 100)", "rgb(201, 90, 218)", "rgb(54, 162, 235)"]
     
     # Financial Overview
     @out monthly_revenue::Float64 = 0.0
@@ -176,18 +206,17 @@ end
         "height" => 400
     )
 
-    # Update financial metrics
-    @onchange num_rooms, nightly_rate, occupancy_rate, monthly_operating_costs begin
-        monthly_revenue = num_rooms * nightly_rate * occupancy_rate * 30
-        monthly_profit = monthly_revenue - monthly_operating_costs
-        
-        # Update investor metrics
-        investors = update_investor_metrics(investors, monthly_profit)
-        investment_plot = update_plot(investors, monthly_profit)
-        
-        # Update financial breakdown chart
-        financial_values = [monthly_revenue, monthly_operating_costs, monthly_profit]
-    end
+    # Operating Costs Structure
+    @out operating_costs = OperatingCost[]
+    @in add_cost = false
+    @in remove_cost = false
+    @in new_cost_name = ""
+    @in new_cost_amount = 0.0
+
+    # Financial metrics for charts
+    @out financial_labels = ["Revenue", "Operating Costs", "Net Profit"]
+    @out financial_values = [0.0, 0.0, 0.0]
+    @out financial_colors = ["rgb(61, 185, 100)", "rgb(201, 90, 218)", "rgb(54, 162, 235)"]
 
     # Initialize when page loads
     @onchange isready begin
@@ -199,12 +228,20 @@ end
             Investor(name="Charlie", amount=50000.0)
         ]
 
-        monthly_revenue = num_rooms * nightly_rate * occupancy_rate * 30
-        monthly_profit = monthly_revenue - monthly_operating_costs
-        
-        investors = update_investor_metrics(investors, monthly_profit)
-        investment_plot = update_plot(investors, monthly_profit)
-        financial_values = [monthly_revenue, monthly_operating_costs, monthly_profit]
+        # Initialize operating costs with mock data
+        operating_costs = [
+            OperatingCost(name="Property Management", amount=3000.0),
+            OperatingCost(name="Maintenance", amount=1500.0),
+            OperatingCost(name="Utilities", amount=800.0),
+            OperatingCost(name="Insurance", amount=400.0),
+            OperatingCost(name="Property Tax", amount=1000.0)
+        ]
+
+        # Calculate initial metrics
+        (monthly_revenue, monthly_operating_costs, monthly_profit) = 
+            calculate_financials(num_rooms, nightly_rate, occupancy_rate, operating_costs)
+        (financial_values, investors, investment_plot) = 
+            update_all_metrics(monthly_revenue, monthly_operating_costs, monthly_profit, investors)
         
         # Initialize property values
         (year1_value, year3_value, year5_value, year10_value, values) = 
@@ -220,6 +257,14 @@ end
             "line" => Dict("color" => "rgb(61, 185, 100)", "width" => 2),
             "marker" => Dict("size" => 8)
         )]
+    end
+
+    # Update financial metrics when input parameters change
+    @onchange num_rooms, nightly_rate, occupancy_rate begin
+        (monthly_revenue, monthly_operating_costs, monthly_profit) = 
+            calculate_financials(num_rooms, nightly_rate, occupancy_rate, operating_costs)
+        (financial_values, investors, investment_plot) = 
+            update_all_metrics(monthly_revenue, monthly_operating_costs, monthly_profit, investors)
     end
 
     # Update when property values change
@@ -267,6 +312,40 @@ end
             investment_plot = update_plot(investors, monthly_profit)
         end
         remove_investor = false
+    end
+
+    # Button handlers for costs
+    @onbutton add_cost begin
+        if !isempty(new_cost_name) && new_cost_amount > 0
+            push!(operating_costs, OperatingCost(
+                name=new_cost_name,
+                amount=new_cost_amount
+            ))
+            
+            new_cost_name = ""
+            new_cost_amount = 0.0
+            
+            # Update all metrics
+            (monthly_revenue, monthly_operating_costs, monthly_profit) = 
+                calculate_financials(num_rooms, nightly_rate, occupancy_rate, operating_costs)
+            (financial_values, investors, investment_plot) = 
+                update_all_metrics(monthly_revenue, monthly_operating_costs, monthly_profit, investors)
+        end
+    end
+
+    @onbutton remove_cost begin
+        if length(operating_costs) > 0
+            new_costs = copy(operating_costs)
+            deleteat!(new_costs, length(new_costs))
+            operating_costs = new_costs
+            
+            # Update all metrics
+            (monthly_revenue, monthly_operating_costs, monthly_profit) = 
+                calculate_financials(num_rooms, nightly_rate, occupancy_rate, operating_costs)
+            (financial_values, investors, investment_plot) = 
+                update_all_metrics(monthly_revenue, monthly_operating_costs, monthly_profit, investors)
+        end
+        remove_cost = false
     end
 
     # Reactive updates
