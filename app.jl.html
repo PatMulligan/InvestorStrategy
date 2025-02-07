@@ -239,15 +239,39 @@
                 </div>
             </div>
 
-            <!-- Financial Overview Section -->
+            <!-- Financial Charts -->
             <div class="row q-pa-md">
-                <div class="col-12">
-                    <h4>3. Financial Analysis</h4>
-                </div>
-                
-                <!-- Key Metrics in a single card -->
-                <div class="col-md-12 q-pa-sm">
+                <!-- Monthly Financial Metrics Chart -->
+                <div class="col-md-6 q-pa-sm">
                     <q-card>
+                        <q-card-section aria-label="Monthly Financial Metrics Chart">
+                            <plotly
+                                :data="[{
+                                    x: financial_labels,
+                                    y: financial_values,
+                                    type: 'bar',
+                                    marker: { color: financial_colors },
+                                    text: financial_values.map(v => v.toLocaleString('en-US', {
+                                        style: 'currency',
+                                        currency: 'USD'
+                                    })),
+                                    textposition: 'auto'
+                                }]"
+                                :layout="{
+                                    title: 'Monthly Financial Metrics',
+                                    yaxis: { title: 'Amount', showgrid: true },
+                                    height: 400,
+                                    bargap: 0.3
+                                }"
+                            />
+                        </q-card-section>
+                    </q-card>
+                </div>
+
+                <!-- Right Column -->
+                <div class="col-md-6 q-pa-sm">
+                    <!-- Key Metrics Card -->
+                    <q-card class="q-mb-md">
                         <q-card-section>
                             <div class="row items-center">
                                 <div class="col-md-4">
@@ -275,42 +299,8 @@
                             </div>
                         </q-card-section>
                     </q-card>
-                </div>
-            </div>
 
-            <!-- Financial Charts -->
-            <div class="row q-pa-md">
-                <div class="col-md-6 q-pa-sm">
-                    <q-card>
-                        <q-card-section aria-label="Monthly Financial Metrics Chart">
-                            <plotly
-                                :data="[{
-                                    x: financial_labels,
-                                    y: financial_values,
-                                    type: 'bar',
-                                    marker: {
-                                        color: financial_colors
-                                    },
-                                    text: financial_values.map(v => v.toLocaleString('en-US', {
-                                        style: 'currency',
-                                        currency: 'USD'
-                                    })),
-                                    textposition: 'auto'
-                                }]"
-                                :layout="{
-                                    title: 'Monthly Financial Metrics',
-                                    yaxis: { 
-                                        title: 'Amount',
-                                        showgrid: true
-                                    },
-                                    height: 400,
-                                    bargap: 0.3
-                                }"
-                            />
-                        </q-card-section>
-                    </q-card>
-                </div>
-                <div class="col-md-6 q-pa-sm">
+                    <!-- Profit Distribution Card -->
                     <q-card>
                         <q-card-section>
                             <div class="text-h6">Profit Distribution</div>
