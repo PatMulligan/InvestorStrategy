@@ -8,43 +8,51 @@
 
     <q-page-container>
         <div class="container q-pa-md">
+            <!-- Initial Setup Section -->
             <div class="row q-pa-md">
                 <div class="col-12">
-                    <h4>Project Parameters</h4>
+                    <h4>1. Property Setup</h4>
                 </div>
-                <div class="col-md-4 q-pa-sm">
-                    <q-input 
-                        v-model.number="land_cost" 
-                        type="number" 
-                        label="Land Cost" 
-                        filled 
-                    />
+                
+                <!-- Property Value -->
+                <div class="col-md-4">
+                    <q-card>
+                        <q-card-section>
+                            <div class="text-h6">Property Value</div>
+                            <div class="row q-mt-md">
+                                <div class="col-12 q-pa-sm">
+                                    <q-input v-model.number="land_cost" type="number" label="Land Cost" filled />
+                                </div>
+                                <div class="col-12 q-pa-sm">
+                                    <q-input v-model.number="annual_appreciation" type="number" label="Annual Appreciation (%)" filled />
+                                </div>
+                            </div>
+                        </q-card-section>
+                    </q-card>
                 </div>
-                <div class="col-md-4 q-pa-sm">
-                    <q-input 
-                        v-model.number="num_rooms" 
-                        type="number" 
-                        label="Number of Rooms" 
-                        filled 
-                    />
+
+                <!-- Lodging Parameters -->
+                <div class="col-md-6 offset-md-1">
+                    <q-card>
+                        <q-card-section>
+                            <div class="text-h6">Lodging Operations</div>
+                            <div class="row q-mt-md">
+                                <div class="col-12 q-pa-sm">
+                                    <q-input v-model.number="num_rooms" type="number" label="Number of Rooms" filled />
+                                </div>
+                                <div class="col-12 q-pa-sm">
+                                    <q-input v-model.number="nightly_rate" type="number" label="Nightly Rate" filled />
+                                </div>
+                                <div class="col-12 q-pa-sm">
+                                    <q-input v-model.number="occupancy_rate" type="number" label="Occupancy Rate (0-1)" filled />
+                                </div>
+                            </div>
+                        </q-card-section>
+                    </q-card>
                 </div>
-                <div class="col-md-4 q-pa-sm">
-                    <q-input 
-                        v-model.number="nightly_rate" 
-                        type="number" 
-                        label="Nightly Rate" 
-                        filled 
-                    />
-                </div>
-                <div class="col-md-4 q-pa-sm">
-                    <q-input 
-                        v-model.number="occupancy_rate" 
-                        type="number" 
-                        label="Occupancy Rate (0-1)" 
-                        filled 
-                    />
-                </div>
-                <div class="col-md-12 q-pa-sm">
+
+                <!-- Operating Costs -->
+                <div class="col-md-12 q-mt-md">
                     <q-card>
                         <q-card-section>
                             <div class="text-h6">Monthly Operating Costs</div>
@@ -79,6 +87,8 @@
                                 row-key="name"
                                 flat
                                 bordered
+                                dense
+                                class="q-mt-sm"
                             >
                                 <template v-slot:body="props">
                                     <q-tr :props="props">
@@ -102,13 +112,15 @@
                 </div>
             </div>
 
+            <!-- Investment Section -->
             <div class="row q-pa-md">
                 <div class="col-12">
-                    <h4>Investment Structure</h4>
+                    <h4>2. Investment Structure</h4>
                 </div>
                 <div class="col-md-6 q-pa-sm">
                     <q-card>
                         <q-card-section>
+                            <div class="text-h6">Investors</div>
                             <div class="row q-mb-md items-end">
                                 <div class="col-md-4 q-px-sm">
                                     <q-input 
@@ -157,90 +169,56 @@
                 <div class="col-md-6 q-pa-sm">
                     <q-card>
                         <q-card-section>
-                            <plotly 
-                                :data="investment_plot" 
-                                :layout="investment_layout"
-                                style="width:100%;height:400px"
-                            />
+                            <div class="text-h6">Investment Distribution</div>
+                            <plotly :data="investment_plot" :layout="investment_layout" style="width:100%;height:400px"/>
                         </q-card-section>
                     </q-card>
                 </div>
             </div>
 
+            <!-- Financial Overview Section -->
             <div class="row q-pa-md">
                 <div class="col-12">
-                    <h4>Financial Overview</h4>
+                    <h4>3. Financial Analysis</h4>
                 </div>
-                <div class="col-md-4 q-pa-sm">
-                    <q-card>
-                        <q-card-section>
-                            <div class="text-h6">Monthly Revenue</div>
-                            <div class="text-h4">{{monthly_revenue.toLocaleString('en-US', {style: 'currency', currency: 'USD'})}}</div>
-                        </q-card-section>
-                    </q-card>
-                </div>
-                <div class="col-md-4 q-pa-sm">
-                    <q-card>
-                        <q-card-section>
-                            <div class="text-h6">Break-even Time</div>
-                            <div class="text-h4">
-                                <span v-if="investors.length > 0">
-                                    <span v-if="investors[0].breakeven_years > 0">{{ investors[0].breakeven_years }}y </span>
-                                    <span v-if="investors[0].breakeven_months > 0">{{ investors[0].breakeven_months }}m </span>
-                                    <span v-if="investors[0].breakeven_days > 0">{{ investors[0].breakeven_days }}d</span>
-                                    <span v-if="investors[0].breakeven_years === 0 && investors[0].breakeven_months === 0 && investors[0].breakeven_days === 0">Never breaks even</span>
-                                </span>
-                                <span v-else>No investors</span>
-                            </div>
-                        </q-card-section>
-                    </q-card>
-                </div>
-                <div class="col-md-4 q-pa-sm">
-                    <q-card>
-                        <q-card-section>
-                            <div class="text-h6">Monthly Profit</div>
-                            <div class="text-h4">{{monthly_profit.toLocaleString('en-US', {style: 'currency', currency: 'USD'})}}</div>
-                        </q-card-section>
-                    </q-card>
-                </div>
-                <!-- Profit Distribution Cards -->
+                
+                <!-- Key Metrics in a single card -->
                 <div class="col-md-12 q-pa-sm">
                     <q-card>
                         <q-card-section>
-                            <div class="text-h6">Profit Distribution</div>
-                            <div class="row q-mt-md">
-                                <template v-for="investor in investors">
-                                    <div class="col-md-6 q-pa-sm">
-                                        <q-card>
-                                            <q-card-section>
-                                                <div class="text-h6 text-capitalize">{{ investor.name }}</div>
-                                                <div class="row">
-                                                    <div class="col-6">
-                                                        <div class="text-subtitle2">Equity Share</div>
-                                                        <div class="text-h5">{{ investor.equity.toFixed(1) }}%</div>
-                                                    </div>
-                                                    <div class="col-6">
-                                                        <div class="text-subtitle2">Monthly Profit</div>
-                                                        <div class="text-h5">{{ investor.monthly_profit.toLocaleString('en-US', {style: 'currency', currency: 'USD'}) }}</div>
-                                                    </div>
-                                                </div>
-                                            </q-card-section>
-                                        </q-card>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="text-subtitle2">Monthly Revenue</div>
+                                    <div class="text-h5">{{monthly_revenue.toLocaleString('en-US', {style: 'currency', currency: 'USD'})}}</div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="text-subtitle2">Break-even Time</div>
+                                    <div class="text-h5">
+                                        <span v-if="investors.length > 0">
+                                            <span v-if="investors[0].breakeven_years > 0">{{ investors[0].breakeven_years }}y </span>
+                                            <span v-if="investors[0].breakeven_months > 0">{{ investors[0].breakeven_months }}m </span>
+                                            <span v-if="investors[0].breakeven_days > 0">{{ investors[0].breakeven_days }}d</span>
+                                            <span v-if="investors[0].breakeven_years === 0 && investors[0].breakeven_months === 0 && investors[0].breakeven_days === 0">Never breaks even</span>
+                                        </span>
+                                        <span v-else>No investors</span>
                                     </div>
-                                </template>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="text-subtitle2">Monthly Profit</div>
+                                    <div class="text-h5">{{monthly_profit.toLocaleString('en-US', {style: 'currency', currency: 'USD'})}}</div>
+                                </div>
                             </div>
                         </q-card-section>
                     </q-card>
                 </div>
             </div>
 
+            <!-- Financial Charts -->
             <div class="row q-pa-md">
-                <div class="col-12">
-                    <h4>Monthly Financial Breakdown</h4>
-                </div>
-                <div class="col-md-12 q-pa-sm">
+                <div class="col-md-6 q-pa-sm">
                     <q-card>
                         <q-card-section>
+                            <div class="text-h6">Monthly Financial Breakdown</div>
                             <plotly
                                 :data="[{
                                     x: financial_labels,
@@ -268,41 +246,62 @@
                         </q-card-section>
                     </q-card>
                 </div>
+                <div class="col-md-6 q-pa-sm">
+                    <q-card>
+                        <q-card-section>
+                            <div class="text-h6">Profit Distribution</div>
+                            <div class="row q-mt-md">
+                                <template v-for="investor in investors">
+                                    <div class="col-md-6 q-pa-xs">
+                                        <q-card flat bordered>
+                                            <q-card-section class="q-pa-sm">
+                                                <div class="text-subtitle1 text-capitalize">{{ investor.name }}</div>
+                                                <div class="row q-mt-sm">
+                                                    <div class="col-6">
+                                                        <div class="text-caption">Equity Share</div>
+                                                        <div class="text-subtitle1">{{ investor.equity.toFixed(1) }}%</div>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <div class="text-caption">Monthly Profit</div>
+                                                        <div class="text-subtitle1">{{ investor.monthly_profit.toLocaleString('en-US', {style: 'currency', currency: 'USD'}) }}</div>
+                                                    </div>
+                                                </div>
+                                            </q-card-section>
+                                        </q-card>
+                                    </div>
+                                </template>
+                            </div>
+                        </q-card-section>
+                    </q-card>
+                </div>
             </div>
 
+            <!-- Property Value Section -->
             <div class="row q-pa-md">
                 <div class="col-12">
-                    <h4>Property Value Projections</h4>
+                    <h4>4. Property Value Projections</h4>
                 </div>
-                <div class="col-md-3 q-pa-sm">
+                <div class="col-md-12 q-pa-sm">
                     <q-card>
                         <q-card-section>
-                            <div class="text-h6">Year 1</div>
-                            <div class="text-h4">{{year1_value.toLocaleString('en-US', {style: 'currency', currency: 'USD'})}}</div>
-                        </q-card-section>
-                    </q-card>
-                </div>
-                <div class="col-md-3 q-pa-sm">
-                    <q-card>
-                        <q-card-section>
-                            <div class="text-h6">Year 3</div>
-                            <div class="text-h4">{{year3_value.toLocaleString('en-US', {style: 'currency', currency: 'USD'})}}</div>
-                        </q-card-section>
-                    </q-card>
-                </div>
-                <div class="col-md-3 q-pa-sm">
-                    <q-card>
-                        <q-card-section>
-                            <div class="text-h6">Year 5</div>
-                            <div class="text-h4">{{year5_value.toLocaleString('en-US', {style: 'currency', currency: 'USD'})}}</div>
-                        </q-card-section>
-                    </q-card>
-                </div>
-                <div class="col-md-3 q-pa-sm">
-                    <q-card>
-                        <q-card-section>
-                            <div class="text-h6">Year 10</div>
-                            <div class="text-h4">{{year10_value.toLocaleString('en-US', {style: 'currency', currency: 'USD'})}}</div>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="text-subtitle2">Year 1</div>
+                                    <div class="text-h5">{{year1_value.toLocaleString('en-US', {style: 'currency', currency: 'USD'})}}</div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="text-subtitle2">Year 3</div>
+                                    <div class="text-h5">{{year3_value.toLocaleString('en-US', {style: 'currency', currency: 'USD'})}}</div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="text-subtitle2">Year 5</div>
+                                    <div class="text-h5">{{year5_value.toLocaleString('en-US', {style: 'currency', currency: 'USD'})}}</div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="text-subtitle2">Year 10</div>
+                                    <div class="text-h5">{{year10_value.toLocaleString('en-US', {style: 'currency', currency: 'USD'})}}</div>
+                                </div>
+                            </div>
                         </q-card-section>
                     </q-card>
                 </div>
