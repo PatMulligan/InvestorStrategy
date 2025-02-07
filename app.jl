@@ -230,11 +230,11 @@ end
 
         # Initialize operating costs with mock data
         operating_costs = [
-            OperatingCost(name="Property Management", amount=3000.0),
-            OperatingCost(name="Maintenance", amount=1500.0),
-            OperatingCost(name="Utilities", amount=800.0),
-            OperatingCost(name="Insurance", amount=400.0),
-            OperatingCost(name="Property Tax", amount=1000.0)
+            OperatingCost(name="Property Management", amount=1000.0),
+            OperatingCost(name="Maintenance", amount=500.0),
+            OperatingCost(name="Utilities", amount=600.0),
+            OperatingCost(name="Insurance", amount=200.0),
+            OperatingCost(name="Property Tax", amount=200.0)
         ]
 
         # Calculate initial metrics
