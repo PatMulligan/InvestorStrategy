@@ -184,8 +184,8 @@ end
     ]
     @out investment_layout = PlotLayout(
         title=PlotLayoutTitle(text="Investment Distribution"),
-        showlegend=true,
-        height=300
+        showlegend=false,
+        height=400
     )
 
     # Property value chart configuration

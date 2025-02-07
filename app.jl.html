@@ -35,7 +35,7 @@
                 <div class="col-md-6 offset-md-1">
                     <q-card>
                         <q-card-section>
-                            <div class="text-h6">Lodging Operations</div>
+                            <div class="text-h6">🏠 Lodging Operations</div>
                             <div class="row q-mt-md">
                                 <div class="col-12 q-pa-sm">
                                     <q-input v-model.number="num_rooms" type="number" label="Number of Rooms" filled />
@@ -180,12 +180,14 @@
                         </q-card-section>
                     </q-card>
                 </div>
-                <div class="col-md-6 q-pa-sm">
+                <div class="col-md-6">
                     <q-card>
-                        <q-card-section>
-                            <div class="text-h6">Investment Distribution</div>
+                        <q-card-section aria-label="Investment Distribution Chart">
                             <div class="relative-position">
-                                <plotly :data="investment_plot" :layout="investment_layout"/>
+                                <plotly 
+                                    :data="investment_plot" 
+                                    :layout="investment_layout"
+                                />
                                 <q-inner-loading :showing="!investment_plot.length">
                                     <q-spinner-dots size="50px" color="primary" />
                                 </q-inner-loading>
@@ -238,8 +240,7 @@
             <div class="row q-pa-md">
                 <div class="col-md-6 q-pa-sm">
                     <q-card>
-                        <q-card-section>
-                            <div class="text-h6">Monthly Financial Breakdown</div>
+                        <q-card-section aria-label="Monthly Financial Metrics Chart">
                             <plotly
                                 :data="[{
                                     x: financial_labels,
@@ -331,7 +332,7 @@
             <div class="row q-pa-md">
                 <div class="col-md-12 q-pa-sm">
                     <q-card>
-                        <q-card-section>
+                        <q-card-section aria-label="Property Value Over Time Chart">
                             <plotly
                                 :data="property_chart_data"
                                 :layout="property_chart_layout"
