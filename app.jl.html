@@ -10,7 +10,7 @@
         <div class="container q-pa-md">
             <!-- Initial Setup Section -->
             <div class="row q-pa-md">
-                <div class="col-12">
+                <div class="col-12 q-mb-sm" style="position: sticky; top: 50px; z-index: 2;">
                     <h4>1. Property Setup</h4>
                 </div>
                 
@@ -44,7 +44,18 @@
                                     <q-input v-model.number="nightly_rate" type="number" label="Nightly Rate" filled />
                                 </div>
                                 <div class="col-12 q-pa-sm">
-                                    <q-input v-model.number="occupancy_rate" type="number" label="Occupancy Rate (0-1)" filled />
+                                    <q-input 
+                                        v-model.number="occupancy_rate" 
+                                        type="number" 
+                                        label="Occupancy Rate (0-1)" 
+                                        filled 
+                                    >
+                                        <template v-slot:append>
+                                            <q-icon name="help" size="xs">
+                                                <q-tooltip>Expected percentage of nights booked (0.6 = 60%)</q-tooltip>
+                                            </q-icon>
+                                        </template>
+                                    </q-input>
                                 </div>
                             </div>
                         </q-card-section>
@@ -114,7 +125,7 @@
 
             <!-- Investment Section -->
             <div class="row q-pa-md">
-                <div class="col-12">
+                <div class="col-12 q-mt-sm">
                     <h4>2. Investment Structure</h4>
                 </div>
                 <div class="col-md-6 q-pa-sm">
@@ -152,6 +163,9 @@
                                 row-key="name"
                                 flat
                                 bordered
+                                dense
+                                :pagination="{rowsPerPage: 5}"
+                                hide-bottom
                             >
                                 <template v-slot:body="props">
                                     <q-tr :props="props">
@@ -170,7 +184,12 @@
                     <q-card>
                         <q-card-section>
                             <div class="text-h6">Investment Distribution</div>
-                            <plotly :data="investment_plot" :layout="investment_layout" style="width:100%;height:400px"/>
+                            <div class="relative-position">
+                                <plotly :data="investment_plot" :layout="investment_layout"/>
+                                <q-inner-loading :showing="!investment_plot.length">
+                                    <q-spinner-dots size="50px" color="primary" />
+                                </q-inner-loading>
+                            </div>
                         </q-card-section>
                     </q-card>
                 </div>
@@ -186,11 +205,12 @@
                 <div class="col-md-12 q-pa-sm">
                     <q-card>
                         <q-card-section>
-                            <div class="row">
+                            <div class="row items-center">
                                 <div class="col-md-4">
                                     <div class="text-subtitle2">Monthly Revenue</div>
                                     <div class="text-h5">{{monthly_revenue.toLocaleString('en-US', {style: 'currency', currency: 'USD'})}}</div>
                                 </div>
+                                <div class="col-auto"><q-separator vertical inset /></div>
                                 <div class="col-md-4">
                                     <div class="text-subtitle2">Break-even Time</div>
                                     <div class="text-h5">
@@ -203,6 +223,7 @@
                                         <span v-else>No investors</span>
                                     </div>
                                 </div>
+                                <div class="col-auto"><q-separator vertical inset /></div>
                                 <div class="col-md-4">
                                     <div class="text-subtitle2">Monthly Profit</div>
                                     <div class="text-h5">{{monthly_profit.toLocaleString('en-US', {style: 'currency', currency: 'USD'})}}</div>
@@ -308,9 +329,6 @@
             </div>
 
             <div class="row q-pa-md">
-                <div class="col-12">
-                    <h4>Property Value Chart</h4>
-                </div>
                 <div class="col-md-12 q-pa-sm">
                     <q-card>
                         <q-card-section>
@@ -321,6 +339,32 @@
                         </q-card-section>
                     </q-card>
                 </div>
+            </div>
+
+            <div class="col-12 q-mb-md">
+                <q-card class="bg-primary text-white">
+                    <q-card-section>
+                        <div class="text-h6">Investment Summary</div>
+                        <div class="row q-mt-sm">
+                            <div class="col-md-3">
+                                <div class="text-caption">Total Investment</div>
+                                <div class="text-h6">{{land_cost.toLocaleString('en-US', {style: 'currency', currency: 'USD'})}}</div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="text-caption">Monthly Revenue</div>
+                                <div class="text-h6">{{monthly_revenue.toLocaleString('en-US', {style: 'currency', currency: 'USD'})}}</div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="text-caption">Number of Investors</div>
+                                <div class="text-h6">{{investors.length}}</div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="text-caption">Annual ROI</div>
+                                <div class="text-h6">{{((monthly_profit * 12 / land_cost) * 100).toFixed(1)}}%</div>
+                            </div>
+                        </div>
+                    </q-card-section>
+                </q-card>
             </div>
         </div>
     </q-page-container>
