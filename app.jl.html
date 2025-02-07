@@ -168,7 +168,7 @@
                                     <div class="col-md-6 q-pa-sm">
                                         <q-card>
                                             <q-card-section>
-                                                <div class="text-h6">{{ investor.name }}</div>
+                                                <div class="text-h6 text-capitalize">{{ investor.name }}</div>
                                                 <div class="row">
                                                     <div class="col-6">
                                                         <div class="text-subtitle2">Equity Share</div>
@@ -261,16 +261,6 @@
                         </q-card-section>
                     </q-card>
                 </div>
-                <div class="col-md-12 q-pa-sm">
-                    <q-card>
-                        <q-card-section>
-                            <plotly 
-                                :data="property_value_plot" 
-                                :layout="property_value_layout"
-                            />
-                        </q-card-section>
-                    </q-card>
-                </div>
             </div>
 
             <div class="row q-pa-md">
@@ -281,21 +271,8 @@
                     <q-card>
                         <q-card-section>
                             <plotly
-                                :data="[{
-                                    x: years,
-                                    y: values,
-                                    mode: 'lines+markers',
-                                    type: 'scatter',
-                                    name: 'Property Value',
-                                    line: { color: 'rgb(61, 185, 100)', width: 2 },
-                                    marker: { size: 8 }
-                                }]"
-                                :layout="{
-                                    title: 'Property Value Over Time',
-                                    xaxis: { title: 'Years', range: [0, 10] },
-                                    yaxis: { title: 'Value' },
-                                    height: 400
-                                }"
+                                :data="property_chart_data"
+                                :layout="property_chart_layout"
                             />
                         </q-card-section>
                     </q-card>

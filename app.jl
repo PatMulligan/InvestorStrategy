@@ -88,6 +88,17 @@ function update_investor_metrics(investors, monthly_profit)
     return investors
 end
 
+# Helper function to update property values
+function calculate_property_values(land_cost, annual_appreciation)
+    year1 = calculate_future_value(land_cost, annual_appreciation, 1)
+    year3 = calculate_future_value(land_cost, annual_appreciation, 3)
+    year5 = calculate_future_value(land_cost, annual_appreciation, 5)
+    year10 = calculate_future_value(land_cost, annual_appreciation, 10)
+    values = [land_cost, year1, year3, year5, year10]
+    
+    return (year1, year3, year5, year10, values)
+end
+
 @app begin
 
     # Reactive variables
@@ -147,6 +158,24 @@ end
         height=300
     )
 
+    # Property value chart configuration
+    @out property_chart_data = [Dict(
+        "x" => years,
+        "y" => values,
+        "mode" => "lines+markers",
+        "type" => "scatter",
+        "name" => "Property Value",
+        "line" => Dict("color" => "rgb(61, 185, 100)", "width" => 2),
+        "marker" => Dict("size" => 8)
+    )]
+
+    @out property_chart_layout = Dict(
+        "title" => "Property Value Over Time",
+        "xaxis" => Dict("title" => "Years", "range" => [0, 10]),
+        "yaxis" => Dict("title" => "Value"),
+        "height" => 400
+    )
+
     # Update financial metrics
     @onchange num_rooms, nightly_rate, occupancy_rate, monthly_operating_costs begin
         monthly_revenue = num_rooms * nightly_rate * occupancy_rate * 30
@@ -162,29 +191,52 @@ end
 
     # Initialize when page loads
     @onchange isready begin
+        # Initialize default investors
+        investors = [
+            Investor(name="Mulligan", amount=600000.0),
+            Investor(name="Pat", amount=100000.0),
+            Investor(name="Colleen", amount=40000.0),
+            Investor(name="Charlie", amount=50000.0)
+        ]
+
         monthly_revenue = num_rooms * nightly_rate * occupancy_rate * 30
         monthly_profit = monthly_revenue - monthly_operating_costs
         
-        # Update metrics
         investors = update_investor_metrics(investors, monthly_profit)
         investment_plot = update_plot(investors, monthly_profit)
         financial_values = [monthly_revenue, monthly_operating_costs, monthly_profit]
-
-        # Update property values
-        year1_value = calculate_future_value(land_cost, annual_appreciation, 1)
-        year3_value = calculate_future_value(land_cost, annual_appreciation, 3)
-        year5_value = calculate_future_value(land_cost, annual_appreciation, 5)
-        year10_value = calculate_future_value(land_cost, annual_appreciation, 10)
-        values = [land_cost, year1_value, year3_value, year5_value, year10_value]
+        
+        # Initialize property values
+        (year1_value, year3_value, year5_value, year10_value, values) = 
+            calculate_property_values(land_cost, annual_appreciation)
+            
+        # Update chart data
+        property_chart_data = [Dict(
+            "x" => years,
+            "y" => values,
+            "mode" => "lines+markers",
+            "type" => "scatter",
+            "name" => "Property Value",
+            "line" => Dict("color" => "rgb(61, 185, 100)", "width" => 2),
+            "marker" => Dict("size" => 8)
+        )]
     end
 
-    # Update property values when inputs change
+    # Update when property values change
     @onchange land_cost, annual_appreciation begin
-        year1_value = calculate_future_value(land_cost, annual_appreciation, 1)
-        year3_value = calculate_future_value(land_cost, annual_appreciation, 3)
-        year5_value = calculate_future_value(land_cost, annual_appreciation, 5)
-        year10_value = calculate_future_value(land_cost, annual_appreciation, 10)
-        values = [land_cost, year1_value, year3_value, year5_value, year10_value]
+        (year1_value, year3_value, year5_value, year10_value, values) = 
+            calculate_property_values(land_cost, annual_appreciation)
+            
+        # Update chart data
+        property_chart_data = [Dict(
+            "x" => years,
+            "y" => values,
+            "mode" => "lines+markers",
+            "type" => "scatter",
+            "name" => "Property Value",
+            "line" => Dict("color" => "rgb(61, 185, 100)", "width" => 2),
+            "marker" => Dict("size" => 8)
+        )]
     end
 
     # Button handlers
