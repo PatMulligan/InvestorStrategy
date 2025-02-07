@@ -231,6 +231,9 @@ end
     @in people_per_trek::Int = 5
     @in cost_per_person::Float64 = 80.0
     
+    # Tab navigation
+    @in activeTab::String = "setup"  # Default to setup tab
+
     # Initialize when page loads
     @onchange isready begin
         # Initialize default investors
