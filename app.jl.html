@@ -176,6 +176,13 @@
                                         </q-td>
                                     </q-tr>
                                 </template>
+                                <template v-slot:bottom-row>
+                                    <q-tr>
+                                        <q-td colspan="1" class="text-right">Total Investment:</q-td>
+                                        <q-td class="text-right">{{ investors.reduce((sum, investor) => sum + investor.amount, 0).toLocaleString('en-US', {style: 'currency', currency: 'USD'}) }}</q-td>
+                                        <q-td></q-td>
+                                    </q-tr>
+                                </template>
                             </q-table>
                         </q-card-section>
                     </q-card>
