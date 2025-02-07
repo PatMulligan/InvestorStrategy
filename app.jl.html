@@ -32,7 +32,7 @@
                 </div>
 
                 <!-- Lodging Parameters -->
-                <div class="col-md-6 offset-md-1">
+                <div class="col-md-4">
                     <q-card>
                         <q-card-section>
                             <div class="text-h6">🏠 Lodging Operations</div>
@@ -56,6 +56,41 @@
                                             </q-icon>
                                         </template>
                                     </q-input>
+                                </div>
+                            </div>
+                        </q-card-section>
+                    </q-card>
+                </div>
+
+                <!-- Horse Operations -->
+                <div class="col-md-4">
+                    <q-card>
+                        <q-card-section>
+                            <div class="text-h6">🐎 Horse Operations</div>
+                            <div class="row q-mt-md">
+                                <div class="col-12 q-pa-sm">
+                                    <q-input 
+                                        v-model.number="monthly_treks" 
+                                        type="number" 
+                                        label="Monthly Treks" 
+                                        filled 
+                                    />
+                                </div>
+                                <div class="col-12 q-pa-sm">
+                                    <q-input 
+                                        v-model.number="people_per_trek" 
+                                        type="number" 
+                                        label="People per Trek" 
+                                        filled 
+                                    />
+                                </div>
+                                <div class="col-12 q-pa-sm">
+                                    <q-input 
+                                        v-model.number="cost_per_person" 
+                                        type="number" 
+                                        label="Cost per Person" 
+                                        filled 
+                                    />
                                 </div>
                             </div>
                         </q-card-section>

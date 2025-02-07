@@ -115,13 +115,21 @@ function update_operating_costs(operating_costs)
     return sum(cost.amount for cost in operating_costs)
 end
 
-# Financial calculation helpers
-function calculate_financials(num_rooms, nightly_rate, occupancy_rate, operating_costs)
-    monthly_revenue = calculate_monthly_revenue(num_rooms, nightly_rate, occupancy_rate)
-    monthly_operating_costs = update_operating_costs(operating_costs)
-    monthly_profit = monthly_revenue - monthly_operating_costs
+# Helper function to calculate horse revenue
+function calculate_horse_revenue(monthly_treks, people_per_trek, cost_per_person)
+    return monthly_treks * people_per_trek * cost_per_person
+end
+
+# Update the financial calculations helper
+function calculate_financials(num_rooms, nightly_rate, occupancy_rate, monthly_treks, people_per_trek, cost_per_person, operating_costs)
+    lodging_revenue = calculate_monthly_revenue(num_rooms, nightly_rate, occupancy_rate)
+    horse_revenue = calculate_horse_revenue(monthly_treks, people_per_trek, cost_per_person)
+    total_revenue = lodging_revenue + horse_revenue
     
-    return (monthly_revenue, monthly_operating_costs, monthly_profit)
+    operating_costs_total = update_operating_costs(operating_costs)
+    monthly_profit = total_revenue - operating_costs_total
+    
+    return (total_revenue, operating_costs_total, monthly_profit)
 end
 
 # Update all metrics and charts
@@ -218,6 +226,11 @@ end
     @out financial_values = [0.0, 0.0, 0.0]
     @out financial_colors = ["rgb(61, 185, 100)", "rgb(201, 90, 218)", "rgb(54, 162, 235)"]
 
+    # Horse Operations
+    @in monthly_treks::Int = 4
+    @in people_per_trek::Int = 5
+    @in cost_per_person::Float64 = 80.0
+    
     # Initialize when page loads
     @onchange isready begin
         # Initialize default investors
@@ -239,7 +252,7 @@ end
 
         # Calculate initial metrics
         (monthly_revenue, monthly_operating_costs, monthly_profit) = 
-            calculate_financials(num_rooms, nightly_rate, occupancy_rate, operating_costs)
+            calculate_financials(num_rooms, nightly_rate, occupancy_rate, monthly_treks, people_per_trek, cost_per_person, operating_costs)
         (financial_values, investors, investment_plot) = 
             update_all_metrics(monthly_revenue, monthly_operating_costs, monthly_profit, investors)
         
@@ -260,9 +273,11 @@ end
     end
 
     # Update financial metrics when input parameters change
-    @onchange num_rooms, nightly_rate, occupancy_rate begin
+    @onchange num_rooms, nightly_rate, occupancy_rate, monthly_treks, people_per_trek, cost_per_person begin
         (monthly_revenue, monthly_operating_costs, monthly_profit) = 
-            calculate_financials(num_rooms, nightly_rate, occupancy_rate, operating_costs)
+            calculate_financials(num_rooms, nightly_rate, occupancy_rate, 
+                               monthly_treks, people_per_trek, cost_per_person, 
+                               operating_costs)
         (financial_values, investors, investment_plot) = 
             update_all_metrics(monthly_revenue, monthly_operating_costs, monthly_profit, investors)
     end
@@ -327,7 +342,9 @@ end
             
             # Update all metrics
             (monthly_revenue, monthly_operating_costs, monthly_profit) = 
-                calculate_financials(num_rooms, nightly_rate, occupancy_rate, operating_costs)
+                calculate_financials(num_rooms, nightly_rate, occupancy_rate,
+                                   monthly_treks, people_per_trek, cost_per_person,
+                                   operating_costs)
             (financial_values, investors, investment_plot) = 
                 update_all_metrics(monthly_revenue, monthly_operating_costs, monthly_profit, investors)
         end
@@ -341,7 +358,9 @@ end
             
             # Update all metrics
             (monthly_revenue, monthly_operating_costs, monthly_profit) = 
-                calculate_financials(num_rooms, nightly_rate, occupancy_rate, operating_costs)
+                calculate_financials(num_rooms, nightly_rate, occupancy_rate,
+                                   monthly_treks, people_per_trek, cost_per_person,
+                                   operating_costs)
             (financial_values, investors, investment_plot) = 
                 update_all_metrics(monthly_revenue, monthly_operating_costs, monthly_profit, investors)
         end
