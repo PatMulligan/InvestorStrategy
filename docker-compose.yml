@@ -1,0 +1,14 @@
+services:
+  julia-app:
+    build: .
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.julia-app.rule=Host(`julia.mydomain.com`)"
+      - "traefik.http.routers.julia-app.entrypoints=web"
+      - "traefik.http.services.julia-app.loadbalancer.server.port=8000"
+    networks:
+      - traefik-network
+
+networks:
+  traefik-network:
+    external: true 

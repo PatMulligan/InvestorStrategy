@@ -8,8 +8,6 @@ COPY . /home/genie/app
 RUN chown -R genie:genie /home/
 USER genie
 RUN julia -e "using Pkg; Pkg.activate(\".\"); Pkg.instantiate();Pkg.precompile()"
-EXPOSE 8000
-EXPOSE 80
 ENV JULIA_DEPOT_PATH "/home/genie/.julia"
 ENV JULIA_REVISE = "off"
 ENV GENIE_ENV="prod"
