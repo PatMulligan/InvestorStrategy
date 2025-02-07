@@ -273,13 +273,13 @@
                     <!-- Key Metrics Card -->
                     <q-card class="q-mb-md">
                         <q-card-section>
-                            <div class="row items-center">
-                                <div class="col-md-4">
+                            <div class="row items-center q-gutter-md">
+                                <div class="col">
                                     <div class="text-subtitle2">Monthly Revenue</div>
                                     <div class="text-h5">{{monthly_revenue.toLocaleString('en-US', {style: 'currency', currency: 'USD'})}}</div>
                                 </div>
-                                <div class="col-auto"><q-separator vertical inset /></div>
-                                <div class="col-md-4">
+                                <q-separator vertical inset />
+                                <div class="col">
                                     <div class="text-subtitle2">Break-even Time</div>
                                     <div class="text-h5">
                                         <span v-if="investors.length > 0">
@@ -291,8 +291,8 @@
                                         <span v-else>No investors</span>
                                     </div>
                                 </div>
-                                <div class="col-auto"><q-separator vertical inset /></div>
-                                <div class="col-md-4">
+                                <q-separator vertical inset />
+                                <div class="col">
                                     <div class="text-subtitle2">Monthly Profit</div>
                                     <div class="text-h5">{{monthly_profit.toLocaleString('en-US', {style: 'currency', currency: 'USD'})}}</div>
                                 </div>
