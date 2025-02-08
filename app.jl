@@ -60,6 +60,7 @@ function update_plot(investors, monthly_profit)
                 name="Investment Amount",
                 hole=0.4,
                 textinfo="label+percent",
+                textfont=Font(color="white"),
                 marker=PlotDataMarker(
                     colors=["#72C8A9", "#BD5631", "#54A2EB", "#FF9F40", "#9966FF"]
                 )
@@ -74,6 +75,7 @@ function update_plot(investors, monthly_profit)
                 name="Investment Amount",
                 hole=0.4,
                 textinfo="label+percent",
+                textfont=Font(color="white"),
                 marker=PlotDataMarker(color="#72C8A9")
             )
         ]
@@ -182,6 +184,7 @@ end
             name="Investment Amount",
             hole=0.4,
             textinfo="label+percent",
+            textfont=Font(color="white"),
             marker=PlotDataMarker(color="#72C8A9")
         )
     ]
