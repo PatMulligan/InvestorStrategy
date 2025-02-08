@@ -1,5 +1,5 @@
-<q-layout view="hHh lpR fFf" :class="theme">
-    <q-header elevated class="bg-primary text-white">
+<q-layout view="hHh lpR fFf"">
+    <q-header elevated class="text-white">
         <q-toolbar>
             <q-toolbar-title>Investment Calculator</q-toolbar-title>
             <q-btn flat round :icon="darkmode ? 'light_mode' : 'dark_mode'" @click="darkmode = !darkmode"/>
@@ -7,7 +7,7 @@
     </q-header>
 
     <q-page-container>
-        <div class="container q-pa-md">
+        <div class="q-pa-md">
             <q-tabs
                 v-model="activeTab"
                 class="text-primary"
@@ -20,7 +20,7 @@
                 <q-tab name="projections" icon="trending_up" label="Value Projections" />
             </q-tabs>
 
-            <q-tab-panels v-model="activeTab" animated>
+            <q-tab-panels class="bg-blue-grey-10" v-model="activeTab" animated>
                 <q-tab-panel name="setup">
                     <!-- Property Setup Section -->
                     <div class="row q-pa-md">
@@ -395,7 +395,7 @@
                     </div>
 
                     <div class="col-12 q-mb-md">
-                        <q-card class="bg-primary text-white">
+                        <q-card class="text-white">
                             <q-card-section>
                                 <div class="text-h6">Investment Summary</div>
                                 <div class="row q-mt-sm">
@@ -424,3 +424,4 @@
         </div>
     </q-page-container>
 </q-layout>
+

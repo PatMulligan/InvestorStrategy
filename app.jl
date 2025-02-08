@@ -146,9 +146,9 @@ end
 
 @app begin
 
-    # Reactive variables
+    # Dark mode configuration
     @in darkmode = true
-    @out dark = true
+    @out dark = darkmode  # This directly connects to Quasar's dark mode
     
     @in land_cost = 800000.0
     @in num_rooms::Int = 6
@@ -368,11 +368,6 @@ end
                 update_all_metrics(monthly_revenue, monthly_operating_costs, monthly_profit, investors)
         end
         remove_cost = false
-    end
-
-    # Reactive updates
-    @onchange darkmode begin
-        dark = darkmode
     end
 end
 
