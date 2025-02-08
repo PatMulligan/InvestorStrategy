@@ -145,11 +145,6 @@ function update_all_metrics(monthly_revenue, monthly_operating_costs, monthly_pr
 end
 
 @app begin
-
-    # Dark mode configuration
-    @in darkmode = true
-    @out dark = darkmode  # This directly connects to Quasar's dark mode
-    
     @in land_cost = 800000.0
     @in num_rooms::Int = 6
     @in nightly_rate::Float64 = 90.0
