@@ -215,8 +215,8 @@ end
         )]
     end
 
-    @onchange add_investor begin
-        if add_investor && !isempty(new_investor_name) && new_investor_amount > 0
+    @onbutton add_investor begin
+        if !isempty(new_investor_name) && new_investor_amount > 0
             # Create new investor
             new_investor = Investor(name=new_investor_name, amount=new_investor_amount)
             investors = [investors..., new_investor]
@@ -225,18 +225,15 @@ end
             (financial_values, investors, investment_plot) = update_all_metrics(
                 monthly_revenue, monthly_operating_costs, monthly_profit, investors
             )
-
+            
             # Clear input fields
             new_investor_name = ""
             new_investor_amount = 0.0
-            
-            # Reset button last
-            add_investor = false
         end
     end
 
-    @onchange add_cost begin
-        if add_cost && !isempty(new_cost_name) && new_cost_amount > 0
+    @onbutton add_cost begin
+        if !isempty(new_cost_name) && new_cost_amount > 0
             # Create a new operating_costs array
             new_cost = OperatingCost(name=new_cost_name, amount=new_cost_amount)
             operating_costs = [operating_costs..., new_cost]
@@ -249,18 +246,15 @@ end
             (financial_values, investors, investment_plot) = update_all_metrics(
                 monthly_revenue, monthly_operating_costs, monthly_profit, investors
             )
-
+            
             # Clear input fields
             new_cost_name = ""
             new_cost_amount = 0.0
-            
-            # Reset button last
-            add_cost = false
         end
     end
 
-    @onchange remove_cost begin
-        if remove_cost && remove_cost_index >= 0 && remove_cost_index < length(operating_costs)
+    @onbutton remove_cost begin
+        if remove_cost_index >= 0 && remove_cost_index < length(operating_costs)
             # Remove specific cost by index
             operating_costs = [operating_costs[1:remove_cost_index]..., operating_costs[remove_cost_index+2:end]...]
             
@@ -272,23 +266,20 @@ end
             )
             
             remove_cost_index = -1  # Reset index
-            remove_cost = false
         end
     end
 
-    @onchange remove_investor begin
-        if remove_investor && remove_investor_index >= 0 && remove_investor_index < length(investors)
+    @onbutton remove_investor begin
+        if remove_investor_index >= 0 && remove_investor_index < length(investors)
             # Remove specific investor by index
             investors = [investors[1:remove_investor_index]..., investors[remove_investor_index+2:end]...]
             
-            # Update all metrics
             (financial_values, investors, investment_plot) = update_all_metrics(
                 monthly_revenue, monthly_operating_costs, monthly_profit, investors
             )
             
             # Reset
             remove_investor_index = -1
-            remove_investor = false
         end
     end
 end
