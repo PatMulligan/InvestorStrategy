@@ -244,6 +244,7 @@
                                         :columns="[
                                             {name: 'name', label: 'Name', field: 'name', align: 'left'},
                                             {name: 'amount', label: 'Amount', field: 'amount', format: val => val.toLocaleString('en-US', {style: 'currency', currency: 'EUR'}), align: 'right'},
+                                            {name: 'equity', label: 'Equity Share', field: 'equity', format: val => val.toFixed(1) + '%', align: 'right'},
                                             {name: 'actions', label: 'Actions', align: 'center'}
                                         ]"
                                         row-key="name"
@@ -257,8 +258,12 @@
                                             <q-tr :props="props">
                                                 <q-td key="name" :props="props">{{ props.row.name }}</q-td>
                                                 <q-td key="amount" :props="props">{{ props.row.amount.toLocaleString('en-US', {style: 'currency', currency: 'EUR'}) }}</q-td>
+                                                <q-td key="equity" :props="props">{{ props.row.equity.toFixed(1) }}%</q-td>
                                                 <q-td key="actions" :props="props">
-                                                    <q-btn size="sm" color="negative" round icon="delete" v-on:click="remove_investor = true" :loading="remove_investor" />
+                                                    <q-btn size="sm" color="negative" round icon="delete" 
+                                                        v-on:click="() => { remove_investor_index = props.rowIndex; remove_investor = true }" 
+                                                        :loading="remove_investor && remove_investor_index === props.rowIndex" 
+                                                    />
                                                 </q-td>
                                             </q-tr>
                                         </template>

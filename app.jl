@@ -95,6 +95,10 @@ end
     # Add variable for tracking which cost to remove
     @in remove_cost_index::Int = -1
 
+    # Add variable for tracking which investor to remove
+    @in remove_investor::Bool = false
+    @in remove_investor_index::Int = -1
+
     @onchange isready begin
         # Initialize default investors
         investors = [
@@ -168,9 +172,12 @@ end
     end
 
     @onchange land_cost begin
+        # Update property values
         (year1_value, year3_value, year5_value, year10_value, values) = calculate_property_values(
             land_cost, annual_appreciation
         )
+        
+        # Update property chart
         property_chart_data = [Dict(
             "x" => years,
             "y" => values,
@@ -180,12 +187,23 @@ end
             "line" => Dict("color" => "rgb(61, 185, 100)", "width" => 2),
             "marker" => Dict("size" => 8)
         )]
+
+        # Update financial metrics since total investment changed
+        monthly_operating_costs = update_operating_costs(operating_costs)
+        monthly_profit = monthly_revenue - monthly_operating_costs
+        
+        (financial_values, investors, investment_plot) = update_all_metrics(
+            monthly_revenue, monthly_operating_costs, monthly_profit, investors
+        )
     end
 
     @onchange annual_appreciation begin
+        # Update property values
         (year1_value, year3_value, year5_value, year10_value, values) = calculate_property_values(
             land_cost, annual_appreciation
         )
+        
+        # Update property chart
         property_chart_data = [Dict(
             "x" => years,
             "y" => values,
@@ -255,6 +273,22 @@ end
             
             remove_cost_index = -1  # Reset index
             remove_cost = false
+        end
+    end
+
+    @onchange remove_investor begin
+        if remove_investor && remove_investor_index >= 0 && remove_investor_index < length(investors)
+            # Remove specific investor by index
+            investors = [investors[1:remove_investor_index]..., investors[remove_investor_index+2:end]...]
+            
+            # Update all metrics
+            (financial_values, investors, investment_plot) = update_all_metrics(
+                monthly_revenue, monthly_operating_costs, monthly_profit, investors
+            )
+            
+            # Reset
+            remove_investor_index = -1
+            remove_investor = false
         end
     end
 end
