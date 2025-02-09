@@ -1,12 +1,12 @@
 <q-layout view="hHh lpR fFf">
-    <q-header elevated class="text-white">
+    <q-header elevated class="bg-primary text-white">
         <q-toolbar>
-            <q-toolbar-title>Investment Calculator</q-toolbar-title>
+            <q-toolbar-title>Investment Property Calculator</q-toolbar-title>
         </q-toolbar>
     </q-header>
 
     <q-page-container>
-        <div class="q-pa-md">
+        <q-page class="q-pa-md">
             <q-tabs
                 v-model="activeTab"
                 class="text-primary"
@@ -424,7 +424,7 @@
                     </div>
                 </q-tab-panel>
             </q-tab-panels>
-        </div>
+        </q-page>
     </q-page-container>
 </q-layout>
 
