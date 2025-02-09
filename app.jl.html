@@ -44,68 +44,109 @@
                             </q-card>
                         </div>
 
-                        <!-- Lodging Parameters -->
-                        <div class="col-md-4">
+                        <!-- Operations Setup -->
+                        <div class="col-md-8">
                             <q-card>
                                 <q-card-section>
-                                    <div class="text-h6">🏠 Lodging Operations</div>
-                                    <div class="row q-mt-md">
-                                        <div class="col-12 q-pa-sm">
-                                            <q-input v-model.number="num_rooms" type="number" label="Number of Rooms" filled />
-                                        </div>
-                                        <div class="col-12 q-pa-sm">
-                                            <q-input v-model.number="nightly_rate" type="number" label="Nightly Rate" filled />
-                                        </div>
-                                        <div class="col-12 q-pa-sm">
-                                            <q-input 
-                                                v-model.number="occupancy_rate" 
-                                                type="number" 
-                                                label="Occupancy Rate (0-1)" 
-                                                filled 
-                                            >
-                                                <template v-slot:append>
-                                                    <q-icon name="help" size="xs">
-                                                        <q-tooltip>Expected percentage of nights booked (0.6 = 60%)</q-tooltip>
-                                                    </q-icon>
-                                                </template>
-                                            </q-input>
-                                        </div>
-                                    </div>
-                                </q-card-section>
-                            </q-card>
-                        </div>
+                                    <div class="text-h6">Revenue Operations</div>
+                                    
+                                    <q-tabs
+                                        v-model="operationTab"
+                                        class="text-grey"
+                                        active-color="primary"
+                                        indicator-color="primary"
+                                        align="justify"
+                                        narrow-indicator
+                                    >
+                                        <q-tab name="lodging" label="Lodging Operations" icon="hotel" />
+                                        <q-tab name="horse" label="Horse Operations" icon="pets" />
+                                    </q-tabs>
 
-                        <!-- Horse Operations -->
-                        <div class="col-md-4">
-                            <q-card>
-                                <q-card-section>
-                                    <div class="text-h6">🐎 Horse Operations</div>
-                                    <div class="row q-mt-md">
-                                        <div class="col-12 q-pa-sm">
-                                            <q-input 
-                                                v-model.number="monthly_treks" 
-                                                type="number" 
-                                                label="Monthly Treks" 
-                                                filled 
-                                            />
-                                        </div>
-                                        <div class="col-12 q-pa-sm">
-                                            <q-input 
-                                                v-model.number="people_per_trek" 
-                                                type="number" 
-                                                label="People per Trek" 
-                                                filled 
-                                            />
-                                        </div>
-                                        <div class="col-12 q-pa-sm">
-                                            <q-input 
-                                                v-model.number="cost_per_person" 
-                                                type="number" 
-                                                label="Cost per Person" 
-                                                filled 
-                                            />
-                                        </div>
-                                    </div>
+                                    <q-separator />
+
+                                    <q-tab-panels v-model="operationTab" animated class="bg-blue-grey-10">
+                                        <!-- Lodging Operations Panel -->
+                                        <q-tab-panel name="lodging">
+                                            <div class="text-subtitle1 q-mb-md text-white">🏠 Lodging Parameters</div>
+                                            <div class="row q-mb-md">
+                                                <div class="col-12">
+                                                    <q-input 
+                                                        v-model.number="num_rooms" 
+                                                        type="number" 
+                                                        label="Number of Rooms" 
+                                                        filled 
+                                                        dark
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div class="row q-mb-md">
+                                                <div class="col-12">
+                                                    <q-input 
+                                                        v-model.number="nightly_rate" 
+                                                        type="number" 
+                                                        label="Nightly Rate" 
+                                                        filled 
+                                                        dark
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-12">
+                                                    <q-input 
+                                                        v-model.number="occupancy_rate" 
+                                                        type="number" 
+                                                        label="Occupancy Rate (0-1)" 
+                                                        filled 
+                                                        dark
+                                                    >
+                                                        <template v-slot:append>
+                                                            <q-icon name="help" size="xs">
+                                                                <q-tooltip>Expected percentage of nights booked (0.6 = 60%)</q-tooltip>
+                                                            </q-icon>
+                                                        </template>
+                                                    </q-input>
+                                                </div>
+                                            </div>
+                                        </q-tab-panel>
+
+                                        <!-- Horse Operations Panel -->
+                                        <q-tab-panel name="horse">
+                                            <div class="text-subtitle1 q-mb-md text-white">🐎 Horse Trek Parameters</div>
+                                            <div class="row q-mb-md">
+                                                <div class="col-12">
+                                                    <q-input 
+                                                        v-model.number="monthly_treks" 
+                                                        type="number" 
+                                                        label="Monthly Treks" 
+                                                        filled 
+                                                        dark
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div class="row q-mb-md">
+                                                <div class="col-12">
+                                                    <q-input 
+                                                        v-model.number="people_per_trek" 
+                                                        type="number" 
+                                                        label="People per Trek" 
+                                                        filled 
+                                                        dark
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-12">
+                                                    <q-input 
+                                                        v-model.number="cost_per_person" 
+                                                        type="number" 
+                                                        label="Cost per Person" 
+                                                        filled 
+                                                        dark
+                                                    />
+                                                </div>
+                                            </div>
+                                        </q-tab-panel>
+                                    </q-tab-panels>
                                 </q-card-section>
                             </q-card>
                         </div>
@@ -144,25 +185,20 @@
                                             {name: 'actions', label: 'Actions', align: 'center'}
                                         ]"
                                         row-key="name"
+                                        dense
                                         flat
                                         bordered
-                                        dense
-                                        class="q-mt-sm"
                                     >
                                         <template v-slot:body="props">
                                             <q-tr :props="props">
                                                 <q-td key="name" :props="props">{{ props.row.name }}</q-td>
                                                 <q-td key="amount" :props="props">{{ props.row.amount.toLocaleString('en-US', {style: 'currency', currency: 'EUR'}) }}</q-td>
                                                 <q-td key="actions" :props="props">
-                                                    <q-btn size="sm" color="negative" round icon="delete" v-on:click="remove_cost = true" :loading="remove_cost" />
+                                                    <q-btn size="sm" color="negative" round icon="delete" 
+                                                        v-on:click="() => { remove_cost_index = props.rowIndex; remove_cost = true }" 
+                                                        :loading="remove_cost && remove_cost_index === props.rowIndex" 
+                                                    />
                                                 </q-td>
-                                            </q-tr>
-                                        </template>
-                                        <template v-slot:bottom-row>
-                                            <q-tr>
-                                                <q-td colspan="1" class="text-right">Total:</q-td>
-                                                <q-td class="text-right">{{ monthly_operating_costs.toLocaleString('en-US', {style: 'currency', currency: 'EUR'}) }}</q-td>
-                                                <q-td></q-td>
                                             </q-tr>
                                         </template>
                                     </q-table>
