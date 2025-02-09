@@ -100,7 +100,7 @@ end
         investors = [
             Investor(name="Mulligan", amount=610000.0),
             Investor(name="Pat", amount=100000.0),
-            Investor(name="Colleen", amount=40000.0),
+            Investor(name="Coco", amount=40000.0),
             Investor(name="Charlie", amount=50000.0)
         ]
         
