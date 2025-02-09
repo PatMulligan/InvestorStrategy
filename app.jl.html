@@ -10,31 +10,39 @@
             <q-tabs
                 v-model="activeTab"
                 class="text-primary"
-                align="left"
+                align="justify"
                 dense
+                indicator-color="white"
             >
-                <q-tab name="setup" icon="settings" label="Property Setup" />
-                <q-tab name="investment" icon="groups" label="Investment Structure" />
-                <q-tab name="financial" icon="analytics" label="Financial Analysis" />
-                <q-tab name="projections" icon="trending_up" label="Value Projections" />
+                <q-tab name="setup" icon="settings" label="Setup" />
+                <q-tab name="investment" icon="groups" label="Investors" />
+                <q-tab name="financial" icon="analytics" label="Analysis" />
+                <q-tab name="projections" icon="trending_up" label="Projections" />
             </q-tabs>
 
             <q-tab-panels class="bg-blue-grey-10" v-model="activeTab" animated>
                 <q-tab-panel name="setup">
                     <!-- Property Setup Section -->
-                    <div class="row q-pa-md">
+                    <div class="row q-col-gutter-md">
                         <div class="col-12 q-mt-sm">
                             <h4>1. Property Setup</h4>
                         </div>
 
                         <!-- Property Value -->
-                        <div class="col-md-4">
-                            <q-card>
+                        <div class="col-12 col-md-6">
+                            <q-card style="height: 100%">
                                 <q-card-section>
                                     <div class="text-h6">Property Value</div>
                                     <div class="row q-mt-md">
                                         <div class="col-12 q-pa-sm">
-                                            <q-input v-model.number="land_cost" type="number" label="Land Cost" filled />
+                                            <q-input 
+                                                v-model.number="land_cost" 
+                                                type="number" 
+                                                label="Land Cost" 
+                                                filled 
+                                                dark 
+                                                class="q-mb-md"
+                                            />
                                         </div>
                                         <div class="col-12 q-pa-sm">
                                             <q-input v-model.number="annual_appreciation" type="number" label="Annual Appreciation (%)" filled />
@@ -45,8 +53,8 @@
                         </div>
 
                         <!-- Operations Setup -->
-                        <div class="col-md-8">
-                            <q-card>
+                        <div class="col-12 col-md-6">
+                            <q-card style="height: 100%">
                                 <q-card-section>
                                     <div class="text-h6">Revenue Operations</div>
                                     
@@ -95,9 +103,7 @@
                                                     <q-input 
                                                         v-model.number="occupancy_rate" 
                                                         type="number" 
-                                                        label="Occupancy Rate (0-1)" 
-                                                        filled 
-                                                        dark
+                                                        label="Occupancy Rate"
                                                     >
                                                         <template v-slot:append>
                                                             <q-icon name="help" size="xs">
@@ -152,7 +158,7 @@
                         </div>
 
                         <!-- Operating Costs -->
-                        <div class="col-md-12 q-mt-md">
+                        <div class="col-12 q-mt-md">
                             <q-card>
                                 <q-card-section>
                                     <div class="text-h6">Monthly Operating Costs</div>
@@ -210,12 +216,12 @@
                 
                 <q-tab-panel name="investment">
                     <!-- Investment Structure Section -->
-                    <div class="row q-pa-md">
+                    <div class="row q-col-gutter-md">
                         <div class="col-12 q-mt-sm">
                             <h4>2. Investment Structure</h4>
                         </div>
-                        <div class="col-md-6 q-pa-sm">
-                            <q-card>
+                        <div class="col-12 col-md-6 q-pa-sm">
+                            <q-card style="height: 100%">
                                 <q-card-section>
                                     <div class="text-h6">Investors</div>
                                     <div class="row q-mb-md items-end">
@@ -278,8 +284,8 @@
                                 </q-card-section>
                             </q-card>
                         </div>
-                        <div class="col-md-6">
-                            <q-card>
+                        <div class="col-12 col-md-6">
+                            <q-card style="height: 100%">
                                 <q-card-section aria-label="Investment Distribution Chart">
                                     <div class="relative-position">
                                         <plotly 
@@ -298,42 +304,14 @@
                 
                 <q-tab-panel name="financial">
                     <!-- Financial Analysis Section -->
-                    <div class="row q-pa-md">
+                    <div class="row q-col-gutter-md">
                         <div class="col-12 q-mt-sm">
                             <h4>3. Financial Analysis</h4>
                         </div>
                         
-                        <!-- Monthly Financial Metrics Chart -->
-                        <div class="col-md-6 q-pa-sm">
+                        <!-- Key Metrics Card -->
+                        <div class="col-12 q-mb-md">
                             <q-card>
-                                <q-card-section aria-label="Monthly Financial Metrics Chart">
-                                    <plotly
-                                        :data="[{
-                                            x: financial_labels,
-                                            y: financial_values,
-                                            type: 'bar',
-                                            marker: { color: financial_colors },
-                                            text: financial_values.map(v => v.toLocaleString('en-US', {
-                                                style: 'currency',
-                                                currency: 'EUR'
-                                            })),
-                                            textposition: 'auto'
-                                        }]"
-                                        :layout="{
-                                            title: 'Monthly Financial Metrics',
-                                            yaxis: { title: 'Amount', showgrid: true },
-                                            height: 400,
-                                            bargap: 0.3
-                                        }"
-                                    />
-                                </q-card-section>
-                            </q-card>
-                        </div>
-
-                        <!-- Right Column -->
-                        <div class="col-md-6 q-pa-sm">
-                            <!-- Key Metrics Card -->
-                            <q-card class="q-mb-md">
                                 <q-card-section>
                                     <div class="row items-center q-gutter-md">
                                         <div class="col">
@@ -361,9 +339,39 @@
                                     </div>
                                 </q-card-section>
                             </q-card>
+                        </div>
+                        
+                        <!-- Charts below -->
+                        <div class="col-12 col-md-6">
+                            <!-- Monthly Financial Metrics Chart -->
+                            <q-card style="height: 100%">
+                                <q-card-section aria-label="Monthly Financial Metrics Chart">
+                                    <plotly
+                                        :data="[{
+                                            x: financial_labels,
+                                            y: financial_values,
+                                            type: 'bar',
+                                            marker: { color: financial_colors },
+                                            text: financial_values.map(v => v.toLocaleString('en-US', {
+                                                style: 'currency',
+                                                currency: 'EUR'
+                                            })),
+                                            textposition: 'auto'
+                                        }]"
+                                        :layout="{
+                                            title: 'Monthly Financial Metrics',
+                                            yaxis: { title: 'Amount', showgrid: true },
+                                            height: 400,
+                                            bargap: 0.3
+                                        }"
+                                    />
+                                </q-card-section>
+                            </q-card>
+                        </div>
 
-                            <!-- Profit Distribution Card -->
-                            <q-card>
+                        <!-- Profit Distribution Card -->
+                        <div class="col-12 col-md-6">
+                            <q-card style="height: 100%">
                                 <q-card-section>
                                     <div class="text-h6">Profit Distribution</div>
                                     <div class="row q-mt-md">
@@ -395,11 +403,11 @@
                 
                 <q-tab-panel name="projections">
                     <!-- Property Value Projections Section -->
-                    <div class="row q-pa-md">
+                    <div class="row q-col-gutter-md">
                         <div class="col-12">
                             <h4>4. Property Value Projections</h4>
                         </div>
-                        <div class="col-md-12 q-pa-sm">
+                        <div class="col-12 col-md-12 q-pa-sm">
                             <q-card>
                                 <q-card-section>
                                     <div class="row">
@@ -425,8 +433,8 @@
                         </div>
                     </div>
 
-                    <div class="row q-pa-md">
-                        <div class="col-md-12 q-pa-sm">
+                    <div class="row q-col-gutter-md">
+                        <div class="col-12 col-md-12 q-pa-sm">
                             <q-card>
                                 <q-card-section aria-label="Property Value Over Time Chart">
                                     <plotly
